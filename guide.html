@@ -1,0 +1,1829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The AI Builder's Playbook — by CurieLabs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f1117;
+    --ink-light: #3d4251;
+    --ink-muted: #6b7280;
+    --accent: #1d4ed8;
+    --accent-light: #eff6ff;
+    --prompt-bg: #0f1117;
+    --prompt-text: #e2e8f0;
+    --prompt-border: #3b82f6;
+    --rule: #e5e7eb;
+    --step-bg: #f8fafc;
+    --part-bg: #0f1117;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.65;
+    color: var(--ink);
+    background: #fff;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── PAGE LAYOUT ── */
+  .page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 48px 60px;
+  }
+
+  /* ── COVER ── */
+  .cover {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 56px 64px 52px;
+    max-width: 720px;
+    margin: 0 auto;
+    page-break-after: always;
+    position: relative;
+  }
+  .cover-top { display: flex; flex-direction: column; }
+  .cover-bottom { display: flex; flex-direction: column; }
+
+  .curielabs-wordmark {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 72px;
+  }
+  .curielabs-mark {
+    width: 28px; height: 28px;
+    background: var(--ink);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .curielabs-mark svg { width: 16px; height: 16px; }
+  .curielabs-name {
+    font-size: 11pt;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .curielabs-name span {
+    font-weight: 300;
+    color: var(--ink-muted);
+  }
+
+  .cover-kicker {
+    font-size: 8.5pt;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+  .cover-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 46pt;
+    line-height: 1.05;
+    color: var(--ink);
+    margin-bottom: 20px;
+    letter-spacing: -0.01em;
+  }
+  .cover-title em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .cover-sub {
+    font-size: 13pt;
+    font-weight: 300;
+    color: var(--ink-light);
+    letter-spacing: 0.01em;
+    max-width: 460px;
+    line-height: 1.5;
+    margin-bottom: 0;
+  }
+  .cover-divider {
+    width: 100%;
+    height: 1px;
+    background: var(--rule);
+    margin: 40px 0;
+  }
+  .cover-intro {
+    font-size: 10.5pt;
+    line-height: 1.75;
+    color: var(--ink-light);
+    max-width: 500px;
+    margin-bottom: 32px;
+  }
+  .cover-intro strong { color: var(--ink); font-weight: 600; }
+  .cover-note {
+    background: var(--accent-light);
+    border-left: 3px solid var(--accent);
+    padding: 14px 18px;
+    font-size: 9.5pt;
+    color: var(--ink-light);
+    max-width: 500px;
+    margin-bottom: 40px;
+  }
+  .cover-note strong { color: var(--ink); }
+  .cover-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 20px;
+    border-top: 1px solid var(--rule);
+  }
+  .cover-meta-left {
+    font-size: 8.5pt;
+    color: var(--ink-muted);
+    line-height: 1.6;
+  }
+  .cover-meta-left strong { color: var(--ink); font-weight: 600; display: block; margin-bottom: 2px; }
+  .cover-ai-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+  }
+  .cover-ai-badge-line {
+    font-size: 7.5pt;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .cover-ai-primary {
+    font-size: 9pt;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── PART HEADER ── */
+  .part-header {
+    background: var(--part-bg);
+    color: #fff;
+    padding: 48px 60px 40px;
+    max-width: 720px;
+    margin: 0 auto;
+    page-break-before: always;
+    page-break-after: avoid;
+  }
+  .part-label {
+    font-size: 8.5pt;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #60a5fa;
+    margin-bottom: 12px;
+  }
+  .part-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26pt;
+    line-height: 1.15;
+    color: #fff;
+    margin-bottom: 10px;
+  }
+  .part-desc {
+    font-size: 10pt;
+    color: #94a3b8;
+    font-weight: 300;
+  }
+  .part-header {
+    position: relative;
+  }
+  .part-brand {
+    position: absolute;
+    top: 48px;
+    right: 60px;
+    font-size: 8pt;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #334155;
+  }
+  .part-brand span { color: #475569; font-weight: 300; }
+
+  /* ── STEP ── */
+  .step {
+    padding: 36px 0 28px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .step:last-of-type { border-bottom: none; }
+
+  .step-header {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 10px;
+  }
+  .step-number {
+    font-size: 8pt;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .step-title {
+    font-size: 15pt;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .step-desc {
+    font-size: 10pt;
+    color: var(--ink-light);
+    line-height: 1.65;
+    margin-bottom: 16px;
+    max-width: 580px;
+  }
+  .step-desc em { color: var(--ink); font-style: normal; font-weight: 500; }
+
+  /* ── PROMPT BOX ── */
+  .prompt-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 8pt;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .prompt-label::before {
+    content: '';
+    display: inline-block;
+    width: 18px;
+    height: 2px;
+    background: var(--accent);
+  }
+
+  .prompt-box {
+    background: var(--prompt-bg);
+    border-left: 3px solid var(--prompt-border);
+    border-radius: 0 6px 6px 0;
+    padding: 18px 22px;
+    margin-top: 4px;
+  }
+  .prompt-box pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5pt;
+    line-height: 1.6;
+    color: var(--prompt-text);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .prompt-box .placeholder {
+    color: #60a5fa;
+    font-style: italic;
+  }
+
+  /* ── SECTION HEADING (non-part) ── */
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20pt;
+    color: var(--ink);
+    margin: 48px 0 24px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  /* ── PRINCIPLES ── */
+  .principles {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 8px;
+  }
+  .principle {
+    background: var(--step-bg);
+    border: 1px solid var(--rule);
+    padding: 14px 16px;
+    border-radius: 4px;
+  }
+  .principle-num {
+    font-size: 8pt;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+  .principle-name {
+    font-weight: 600;
+    font-size: 9.5pt;
+    color: var(--ink);
+    margin-bottom: 3px;
+  }
+  .principle-body {
+    font-size: 9pt;
+    color: var(--ink-light);
+    line-height: 1.5;
+  }
+
+  /* ── INDEX TABLE ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9.5pt;
+    margin-top: 16px;
+  }
+  th {
+    text-align: left;
+    font-size: 8pt;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    padding: 8px 12px;
+    border-bottom: 2px solid var(--ink);
+  }
+  td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { font-weight: 600; color: var(--accent); width: 52px; }
+  td:nth-child(2) { font-weight: 500; color: var(--ink); }
+  td:nth-child(3) { color: var(--ink-light); }
+  tr:nth-child(even) td { background: var(--step-bg); }
+
+  /* ── FOOTER ── */
+  .footer {
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid var(--rule);
+    font-size: 8.5pt;
+    color: var(--ink-muted);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* ── CONCEPT STEPS (no step number badge) ── */
+  .step .step-number[style*="Concept"] { color: var(--ink-muted); }
+
+  /* ── PRINT ── */
+  @media print {
+    body { font-size: 10pt; }
+    .cover { min-height: auto; padding-top: 60px; padding-bottom: 60px; }
+    .part-header { page-break-before: always; page-break-after: avoid; }
+    .step { page-break-inside: avoid; }
+    .step-header { page-break-after: avoid; }
+    .step-desc { page-break-after: avoid; }
+    .prompt-box { page-break-inside: avoid; page-break-before: avoid; }
+    .prompt-label { page-break-after: avoid; }
+    .principles { page-break-inside: avoid; }
+    .page { page-break-inside: auto; }
+    h2, h3 { page-break-after: avoid; }
+    table { page-break-inside: avoid; }
+    pre { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════ COVER -->
+<div class="cover">
+
+  <div class="cover-top">
+    <!-- Wordmark -->
+    <div class="curielabs-wordmark">
+      <div class="curielabs-mark">
+        <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="8" cy="8" r="5.5" stroke="white" stroke-width="1.5"/>
+          <circle cx="8" cy="8" r="1.5" fill="white"/>
+          <line x1="8" y1="2.5" x2="8" y2="0.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="8" y1="15.5" x2="8" y2="13.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="2.5" y1="8" x2="0.5" y2="8" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="15.5" y1="8" x2="13.5" y2="8" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="curielabs-name">CurieLabs<span>.ai</span></div>
+    </div>
+
+    <!-- Title block -->
+    <div class="cover-kicker">by CurieLabs</div>
+    <div class="cover-title">The AI<br>Builder's<br><em>Playbook</em></div>
+    <div class="cover-sub">For everyone who has an idea and wants to build and run it — without ever writing code.</div>
+  </div>
+
+  <div class="cover-bottom">
+    <div class="cover-divider"></div>
+    <!-- Prompt count callout -->
+    <div style="display:flex;gap:32px;margin-bottom:28px;">
+      <div style="border-left:3px solid var(--accent);padding-left:14px;">
+        <div style="font-family:'Playfair Display',serif;font-size:28pt;color:var(--ink);line-height:1;">18</div>
+        <div style="font-size:8pt;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted);margin-top:2px;">Complete Prompts</div>
+      </div>
+      <div style="border-left:3px solid var(--rule);padding-left:14px;">
+        <div style="font-family:'Playfair Display',serif;font-size:28pt;color:var(--ink);line-height:1;">8</div>
+        <div style="font-size:8pt;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted);margin-top:2px;">Guided Parts</div>
+      </div>
+      <div style="border-left:3px solid var(--rule);padding-left:14px;">
+        <div style="font-family:'Playfair Display',serif;font-size:28pt;color:var(--ink);line-height:1;">0</div>
+        <div style="font-size:8pt;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted);margin-top:2px;">Lines of Code</div>
+      </div>
+    </div>
+
+    <p class="cover-intro">
+      An open, general-purpose playbook for building software with AI — from first idea to working product. Every prompt is complete, reusable, and ready to paste. You are the director. The AI is your expert assistant. This guide teaches you how to run that collaboration so it actually works.
+    </p>
+    <div class="cover-note">
+      <strong>How it works.</strong> Create a folder for your project. Copy the provided CLAUDE.md template inside it — this file is the living blueprint of your application, and Claude will keep it up to date throughout the entire build. Open a Claude session pointed at that folder. From that point on, Claude reads and updates CLAUDE.md directly. Every step in this guide either asks Claude a question or tells it to record what you just decided. The project documents itself as you go.
+    </div>
+    <div class="cover-meta">
+      <div class="cover-meta-left">
+        <strong>curielabs.ai</strong>
+        Developed by CurieLabs · Freely shared<br>
+        Born from building dozens of real projects.
+      </div>
+      <div class="cover-ai-badge">
+        <div class="cover-ai-badge-line">Works with Claude,</div>
+        <div class="cover-ai-badge-line">Cursor, Copilot,</div>
+        <div class="cover-ai-badge-line">or any AI you prefer</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════ PART 1 -->
+<div class="part-header">
+  <div class="part-label">Part One</div>
+  <div class="part-brand">CurieLabs<span>.ai</span></div>
+  <div class="part-title">Starting a New Project</div>
+  <div class="part-desc">Steps 1–5 &nbsp;·&nbsp; From idea to ready-to-build</div>
+</div>
+
+<div class="page">
+
+<!-- SETUP BLOCK -->
+<div style="border:1.5px solid var(--ink);border-radius:8px;overflow:hidden;margin-bottom:36px;">
+  <div style="background:var(--ink);color:#fff;padding:12px 20px;">
+    <span style="font-size:8pt;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#60a5fa;">Before Step 01 — Set Up Your Project Folder</span>
+  </div>
+  <div style="padding:18px 20px;">
+    <p style="font-size:9.5pt;color:var(--ink-light);line-height:1.75;margin-bottom:14px;">Everything in this guide works because Claude has direct access to your project folder. It reads CLAUDE.md automatically at the start of each session and writes updates to it directly — no copying, no pasting documents back and forth. Do this once before you start:</p>
+    <div style="display:grid;grid-template-columns:24px 1fr;gap:8px 12px;align-items:start;">
+      <div style="font-size:9pt;font-weight:700;color:var(--accent);padding-top:1px;">1</div>
+      <div style="font-size:9.5pt;color:var(--ink);line-height:1.6;"><strong>Create a folder</strong> for your project anywhere on your computer. Name it after your project — no spaces, use hyphens. Example: <code style="font-family:'JetBrains Mono',monospace;font-size:8.5pt;background:var(--step-bg);padding:1px 5px;border-radius:3px;">my-app/</code></div>
+      <div style="font-size:9pt;font-weight:700;color:var(--accent);padding-top:1px;">2</div>
+      <div style="font-size:9.5pt;color:var(--ink);line-height:1.6;"><strong>Copy the CLAUDE.md template</strong> from Part 5 of this guide into that folder. Save it exactly as <code style="font-family:'JetBrains Mono',monospace;font-size:8.5pt;background:var(--step-bg);padding:1px 5px;border-radius:3px;">CLAUDE.md</code>. It starts mostly empty — that's correct.</div>
+      <div style="font-size:9pt;font-weight:700;color:var(--accent);padding-top:1px;">3</div>
+      <div style="font-size:9.5pt;color:var(--ink);line-height:1.6;"><strong>Open a Claude session pointed at that folder.</strong> In Claude Code: <code style="font-family:'JetBrains Mono',monospace;font-size:8.5pt;background:var(--step-bg);padding:1px 5px;border-radius:3px;">cd my-app && claude</code>. In Cowork or Cursor: select or open the project folder. Claude will find CLAUDE.md automatically.</div>
+      <div style="font-size:9pt;font-weight:700;color:var(--accent);padding-top:1px;">4</div>
+      <div style="font-size:9.5pt;color:var(--ink);line-height:1.6;"><strong>Run Steps 1–5 in order.</strong> After each step, tell Claude to update CLAUDE.md with what you just established. By the time you finish Step 5, CLAUDE.md is complete and the project is ready to build.</div>
+    </div>
+  </div>
+  <div style="background:var(--step-bg);border-top:1px solid var(--rule);padding:11px 20px;">
+    <span style="font-size:8pt;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted);">Using a different AI? &nbsp;</span>
+    <span style="font-size:9pt;color:var(--ink-light);">Rename CLAUDE.md to match your tool (AGENT.md, COPILOT.md, etc.) and replace "Claude" in the prompts. Everything else is identical.</span>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-header">
+    <span class="step-number">Step 01</span>
+    <span class="step-title">Capture Your Requirements</span>
+  </div>
+
+  <p class="step-desc">Before any AI session begins, spend a few minutes thinking clearly about what you want. The prompt does the coaching — but the raw material is yours. Here is how to think about it.</p>
+
+  <!-- HOUSE ANALOGY -->
+  <div style="background:var(--step-bg);border:1px solid var(--rule);border-radius:6px;padding:22px 24px;margin-bottom:20px;">
+    <div style="font-size:8pt;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:14px;">Think of it like building a house</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+      <div style="text-align:center;padding:14px 10px;background:#fff;border:1px solid var(--rule);border-radius:6px;">
+        <div style="font-size:18pt;margin-bottom:6px;">🏠</div>
+        <div style="font-size:8.5pt;font-weight:700;color:var(--ink);margin-bottom:4px;">The Vision</div>
+        <div style="font-size:8pt;color:var(--ink-muted);line-height:1.5;">What it looks like when finished. Who lives in it. How it feels.</div>
+      </div>
+      <div style="text-align:center;padding:14px 10px;background:#fff;border:1px solid var(--rule);border-radius:6px;">
+        <div style="font-size:18pt;margin-bottom:6px;">🧱</div>
+        <div style="font-size:8.5pt;font-weight:700;color:var(--ink);margin-bottom:4px;">The Foundation</div>
+        <div style="font-size:8pt;color:var(--ink-muted);line-height:1.5;">The core that everything else depends on. Built first. Hard to change later.</div>
+      </div>
+      <div style="text-align:center;padding:14px 10px;background:#fff;border:1px solid var(--rule);border-radius:6px;">
+        <div style="font-size:18pt;margin-bottom:6px;">🪵</div>
+        <div style="font-size:8.5pt;font-weight:700;color:var(--ink);margin-bottom:4px;">The Framing</div>
+        <div style="font-size:8pt;color:var(--ink-muted);line-height:1.5;">The structure. Rooms, layout, how things connect. Easier to adjust than foundation.</div>
+      </div>
+      <div style="text-align:center;padding:14px 10px;background:#fff;border:1px solid var(--rule);border-radius:6px;">
+        <div style="font-size:18pt;margin-bottom:6px;">🎨</div>
+        <div style="font-size:8.5pt;font-weight:700;color:var(--ink);margin-bottom:4px;">The Finish</div>
+        <div style="font-size:8pt;color:var(--ink-muted);line-height:1.5;">Color, style, polish. Decisions you make last and can always change.</div>
+      </div>
+    </div>
+    <!-- THE KEY INSIGHT -->
+    <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--rule);border-radius:6px;overflow:hidden;">
+      <div style="padding:14px 16px;border-right:1px solid var(--rule);">
+        <div style="font-size:8pt;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:8px;">Most people come in with</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span style="font-size:13pt;">🏠</span>
+          <span style="font-size:9pt;font-weight:600;color:var(--ink);">The Vision</span>
+          <span style="font-size:8.5pt;color:var(--ink-muted);">— what it does, who it's for</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:13pt;">🎨</span>
+          <span style="font-size:9pt;font-weight:600;color:var(--ink);">The Finish</span>
+          <span style="font-size:8.5pt;color:var(--ink-muted);">— what it looks and feels like</span>
+        </div>
+      </div>
+      <div style="padding:14px 16px;background:var(--accent-light);">
+        <div style="font-size:8pt;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;">The AI handles the rest</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span style="font-size:13pt;">🧱</span>
+          <span style="font-size:9pt;font-weight:600;color:var(--ink);">The Foundation</span>
+          <span style="font-size:8.5pt;color:var(--ink-light);">— data, structure, technology</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:13pt;">🪵</span>
+          <span style="font-size:9pt;font-weight:600;color:var(--ink);">The Framing</span>
+          <span style="font-size:8.5pt;color:var(--ink-light);">— components, logic, connections</span>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:9.5pt;color:var(--ink-light);line-height:1.7;margin-top:12px;margin-bottom:0;">Most people have never built software before and have no idea how to lay a foundation or frame a structure. <strong style="color:var(--ink);">That's exactly what the AI is exceptional at</strong> — given your clear goals, it will design the right foundation and frame the right structure for what you're trying to build. Your job is to bring the vision and be clear about the finish. The AI does the engineering in between. <strong style="color:var(--ink);">Every decision about what it does and what it's for is yours. Every decision about how to build it is the AI's.</strong> This guide is the process that connects the two.</p>
+  </div>
+
+  <!-- THINK BEFORE YOU PROMPT -->
+  <div style="margin-bottom:20px;">
+    <div style="font-size:8pt;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:12px;">Before you start the interview — ask yourself these questions</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+
+      <div style="background:#fff;border:1px solid var(--rule);border-radius:6px;padding:14px 16px;">
+        <div style="font-size:8.5pt;font-weight:700;color:var(--accent);margin-bottom:5px;">What does it do in one sentence?</div>
+        <div style="font-size:9pt;color:var(--ink-light);line-height:1.55;">Not what it might do — what is the one thing it must do for it to be worth building at all? If you can't say it in a sentence, you're not ready to start.</div>
+      </div>
+
+      <div style="background:#fff;border:1px solid var(--rule);border-radius:6px;padding:14px 16px;">
+        <div style="font-size:8.5pt;font-weight:700;color:var(--accent);margin-bottom:5px;">Who uses it and what do they need?</div>
+        <div style="font-size:9pt;color:var(--ink-light);line-height:1.55;">Is it just you? A team? Customers? Strangers on the internet? Each answer changes what the app needs to do, how secure it needs to be, and how simple it needs to feel.</div>
+      </div>
+
+      <div style="background:#fff;border:1px solid var(--rule);border-radius:6px;padding:14px 16px;">
+        <div style="font-size:8.5pt;font-weight:700;color:var(--accent);margin-bottom:5px;">What does it look like?</div>
+        <div style="font-size:9pt;color:var(--ink-light);line-height:1.55;">Does it need a dashboard? A chat interface? A map? A form? A report? A calendar? A visual that updates in real time? Knowing the interface type early shapes everything below it.</div>
+      </div>
+
+      <div style="background:#fff;border:1px solid var(--rule);border-radius:6px;padding:14px 16px;">
+        <div style="font-size:8.5pt;font-weight:700;color:var(--accent);margin-bottom:5px;">What data does it work with?</div>
+        <div style="font-size:9pt;color:var(--ink-light);line-height:1.55;">Does it store information? Read from a file or spreadsheet? Connect to a live feed? Pull from an API? The data is the foundation — define it early and change it carefully.</div>
+      </div>
+
+      <div style="background:#fff;border:1px solid var(--rule);border-radius:6px;padding:14px 16px;">
+        <div style="font-size:8.5pt;font-weight:700;color:var(--accent);margin-bottom:5px;">Is there a formula or logic at the core?</div>
+        <div style="font-size:9pt;color:var(--ink-light);line-height:1.55;">Does it calculate something? Score something? Match, rank, filter, or recommend? If there's a specific rule or formula that drives the app, describe it precisely — this is the engine inside the house.</div>
+      </div>
+
+      <div style="background:#fff;border:1px solid var(--rule);border-radius:6px;padding:14px 16px;">
+        <div style="font-size:8.5pt;font-weight:700;color:var(--accent);margin-bottom:5px;">What must it never do?</div>
+        <div style="font-size:9pt;color:var(--ink-light);line-height:1.55;">The constraints are as important as the features. What's out of scope? What would break trust with users? What complexity would you rather defer? Knowing the limits keeps the foundation clean.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- LIVING REQUIREMENTS NOTE -->
+  <div style="background:var(--accent-light);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:14px 18px;margin-bottom:18px;">
+    <div style="font-size:8.5pt;font-weight:700;color:var(--ink);margin-bottom:4px;">Requirements are not a contract — they're a starting point.</div>
+    <div style="font-size:9.5pt;color:var(--ink-light);line-height:1.7;">You will learn things as you build. New ideas will emerge. Priorities will shift. That's expected and welcome. Update your requirements document any time — just do it consciously, with a reason, and make sure CLAUDE.md reflects the change. The goal is not to predict the future perfectly; it's to make each decision deliberately rather than by accident.</div>
+  </div>
+
+  <div class="prompt-label">Prompt — Requirements Interview</div>
+  <div class="prompt-box"><pre>I want to build something and need help thinking it through before writing any code.
+My rough idea: <span class="placeholder">[describe your idea in 2–3 sentences]</span>
+
+Here is what I already know about it:
+- The one thing it must do: <span class="placeholder">[your one sentence]</span>
+- Who uses it: <span class="placeholder">[yourself / a team / customers / the public]</span>
+- Interface I'm imagining: <span class="placeholder">[dashboard / chat / map / form / report / other]</span>
+- Data it works with: <span class="placeholder">[what it stores, reads, or connects to — or "not sure yet"]</span>
+- Core formula or logic (if any): <span class="placeholder">[describe any calculation, scoring, or rule at the center]</span>
+- Things it must NOT do: <span class="placeholder">[scope limits, complexity to avoid, trust boundaries]</span>
+
+Act as a requirements engineer. Use what I've shared as a starting point and interview
+me to fill in everything else. Ask ONE question at a time and wait for my answer.
+
+Cover anything not already addressed: specific features for the first working version;
+what a successful outcome looks like concretely; data, privacy, and security implications;
+external services or APIs needed; what "done" looks like for this first version.
+
+When the interview is complete, update the Requirements section of CLAUDE.md with
+everything we established. Note anything I should revisit as the project evolves.
+Confirm when CLAUDE.md has been updated.</pre></div>
+
+  <div style="margin-top:10px;background:var(--step-bg);border:1px solid var(--rule);border-radius:6px;padding:11px 16px;display:flex;align-items:center;gap:12px;">
+    <span style="font-size:8pt;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);white-space:nowrap;">Then say →</span>
+    <code style="font-family:'JetBrains Mono',monospace;font-size:8.5pt;color:var(--accent);">Claude, update CLAUDE.md with the requirements we just established.</code>
+  </div>
+  <div style="margin-top:10px;padding:12px 16px;background:var(--step-bg);border:1px solid var(--rule);border-radius:6px;font-size:9pt;color:var(--ink-light);line-height:1.65;">
+    <strong style="color:var(--ink);">Requirements evolve.</strong> As you build and learn, come back and say <em>"Claude, here's what changed — update the requirements in CLAUDE.md."</em> The document grows with the project.
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-header">
+    <span class="step-number">Step 02</span>
+    <span class="step-title">Design the Architecture</span>
+  </div>
+  <p class="step-desc">The AI reads your requirements from CLAUDE.md, designs the technical structure, explains reasoning behind every choice, and surfaces key tradeoffs for you to consciously approve before building starts.</p>
+  <div class="prompt-label">Prompt — Architecture Design</div>
+  <div class="prompt-box"><pre>Read the requirements in CLAUDE.md.
+
+Act as a software architect. Design the complete technical architecture for this system.
+I am not a programmer — explain reasoning in plain language alongside technical terms.
+
+Cover: the major components and what each does; how they connect and communicate; where
+data is stored and why; technology choices with reasoning and alternatives considered;
+the user's complete journey step by step; security and privacy — where sensitive data
+lives and how it's protected; the biggest technical risks and how the design handles
+them; what I will NOT be able to easily change once building starts.
+
+At the end, present the 3–5 most significant design tradeoffs. For each: what you
+chose, what you didn't, and why. I want to consciously agree before we proceed.
+Then update the Architecture section of CLAUDE.md and confirm.</pre></div>
+  <div style="margin-top:10px;background:var(--step-bg);border:1px solid var(--rule);border-radius:6px;padding:11px 16px;display:flex;align-items:center;gap:12px;">
+    <span style="font-size:8pt;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);white-space:nowrap;">Then say →</span>
+    <code style="font-family:'JetBrains Mono',monospace;font-size:8.5pt;color:var(--accent);">Claude, update CLAUDE.md with the architecture we just agreed on.</code>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-header">
+    <span class="step-number">Step 03</span>
+    <span class="step-title">Scope the MVP</span>
+  </div>
+  <p class="step-desc">The AI reads requirements and architecture from CLAUDE.md and defines precisely what the first working version includes and excludes. This agreement prevents scope creep before it starts.</p>
+  <div class="prompt-label">Prompt — MVP Scope</div>
+  <div class="prompt-box"><pre>Read CLAUDE.md. Based on the requirements and architecture there:
+
+Define the MVP — the smallest version that is genuinely useful and worth building first.
+1. Propose what the MVP includes: specific features and components for the first version.
+2. Propose what the MVP excludes: desirable features that should wait.
+3. For anything uncertain, ask me directly — one item at a time.
+4. Once we've agreed: update the MVP Scope section of CLAUDE.md with the final list —
+   IN (one-line reason each), OUT (one-line reason each), and one sentence describing
+   exactly what this MVP does. Confirm when done.</pre></div>
+  <div style="margin-top:10px;background:var(--step-bg);border:1px solid var(--rule);border-radius:6px;padding:11px 16px;display:flex;align-items:center;gap:12px;">
+    <span style="font-size:8pt;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);white-space:nowrap;">Then say →</span>
+    <code style="font-family:'JetBrains Mono',monospace;font-size:8.5pt;color:var(--accent);">Claude, update CLAUDE.md with the MVP scope we just agreed on.</code>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-header">
+    <span class="step-number">Step 04</span>
+    <span class="step-title">Create the Build Plan</span>
+  </div>
+  <p class="step-desc">The AI reads everything established so far from CLAUDE.md and creates a phased construction sequence. Each phase produces something demonstrably working. No phase starts until the previous phase's done criteria are met.</p>
+  <div class="prompt-label">Prompt — Build Plan</div>
+  <div class="prompt-box"><pre>Read CLAUDE.md. Based on the requirements, architecture, and MVP scope there:
+
+Create a phased Build Plan for implementing this MVP.
+Each phase must: have a name and single clear goal; list the specific components being
+built; define concrete done criteria — specific things I can test or observe, not vague
+descriptions; note what must be true before this phase begins; flag risks specific to
+this phase.
+
+Order phases so Phase 1 is the smallest possible working skeleton; each subsequent
+phase adds one discrete layer; no phase begins until the previous phase's done
+criteria are fully met. Note any decisions I must make before each phase begins.
+
+Update the Build Plan section of CLAUDE.md with the complete plan. Confirm when done.</pre></div>
+  <div style="margin-top:10px;background:var(--step-bg);border:1px solid var(--rule);border-radius:6px;padding:11px 16px;display:flex;align-items:center;gap:12px;">
+    <span style="font-size:8pt;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);white-space:nowrap;">Then say →</span>
+    <code style="font-family:'JetBrains Mono',monospace;font-size:8.5pt;color:var(--accent);">Claude, update CLAUDE.md with the build plan we just created.</code>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-header">
+    <span class="step-number">Step 05</span>
+    <span class="step-title">Initialize CLAUDE.md — The Launchpad</span>
+  </div>
+
+  <p class="step-desc">You now have four documents: Requirements, Architecture, MVP Scope, and Build Plan. This step combines all of them with the CLAUDE.md template from Part 5 into a single, unified project memory file. When this is done, the rocket is ready to launch.</p>
+
+  <!-- SINGLE SESSION NOTE -->
+  <div style="background:var(--accent-light);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:13px 18px;margin-bottom:18px;">
+    <div style="font-size:8.5pt;font-weight:700;color:var(--ink);margin-bottom:3px;">For simple projects, Steps 1–5 can all be done in a single session.</div>
+    <div style="font-size:9.5pt;color:var(--ink-light);line-height:1.65;">Start a conversation, run the prompts in order, answer the questions, and by the time you finish Step 5 you have a fully initialized project ready to build. The more complex your project, the more time each step deserves — but there's no rule that says you need to stop between them.</div>
+  </div>
+
+  <!-- WHAT YOU'RE COMBINING -->
+  <div style="background:var(--step-bg);border:1px solid var(--rule);border-radius:6px;padding:18px 20px;margin-bottom:18px;">
+    <div style="font-size:8pt;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:14px;">What goes into CLAUDE.md</div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:0;border:1px solid var(--rule);border-radius:6px;overflow:hidden;">
+      <div style="padding:12px 10px;text-align:center;border-right:1px solid var(--rule);">
+        <div style="font-size:14pt;margin-bottom:4px;">📋</div>
+        <div style="font-size:8pt;font-weight:700;color:var(--accent);">Step 01</div>
+        <div style="font-size:7.5pt;color:var(--ink-muted);margin-top:2px;">Requirements</div>
+      </div>
+      <div style="padding:12px 10px;text-align:center;border-right:1px solid var(--rule);">
+        <div style="font-size:14pt;margin-bottom:4px;">🏗️</div>
+        <div style="font-size:8pt;font-weight:700;color:var(--accent);">Step 02</div>
+        <div style="font-size:7.5pt;color:var(--ink-muted);margin-top:2px;">Architecture</div>
+      </div>
+      <div style="padding:12px 10px;text-align:center;border-right:1px solid var(--rule);">
+        <div style="font-size:14pt;margin-bottom:4px;">🎯</div>
+        <div style="font-size:8pt;font-weight:700;color:var(--accent);">Step 03</div>
+        <div style="font-size:7.5pt;color:var(--ink-muted);margin-top:2px;">MVP Scope</div>
+      </div>
+      <div style="padding:12px 10px;text-align:center;border-right:1px solid var(--rule);">
+        <div style="font-size:14pt;margin-bottom:4px;">📅</div>
+        <div style="font-size:8pt;font-weight:700;color:var(--accent);">Step 04</div>
+        <div style="font-size:7.5pt;color:var(--ink-muted);margin-top:2px;">Build Plan</div>
+      </div>
+      <div style="padding:12px 10px;text-align:center;background:var(--ink);">
+        <div style="font-size:14pt;margin-bottom:4px;">🚀</div>
+        <div style="font-size:8pt;font-weight:700;color:#60a5fa;">Step 05</div>
+        <div style="font-size:7.5pt;color:#94a3b8;margin-top:2px;">CLAUDE.md</div>
+      </div>
+    </div>
+    <p style="font-size:9pt;color:var(--ink-muted);margin-top:10px;margin-bottom:0;">The CLAUDE.md template is in Part 5 of this guide. Copy it in full, paste it along with the four documents below, and Claude will merge everything into a single initialized file — structured, consistent, and ready for the first build session.</p>
+  </div>
+
+  <div class="prompt-label">Prompt — Finalize CLAUDE.md</div>
+  <div class="prompt-box"><pre>Read CLAUDE.md. You have updated it with requirements, architecture, MVP scope, and
+build plan during Steps 1–4. Now finalize it:
+
+1. Add the Session Protocol section with this exact text:
+   "Before every session: Read this file. Identify the current Build Plan phase.
+   State today's goal in one sentence. Tell me if anything in this file looks wrong
+   or out of date before we begin.
+   During every session: Stay on the current Build Plan phase. Record failures in
+   Debugging History immediately. Update CLAUDE.md directly — do not wait until the end.
+   After every session: Update Current State, Build Plan status, What's Next, and
+   add a Session Log entry."
+
+2. Set the Current State section to reflect that nothing is built yet.
+
+3. Mark Phase 1 of the Build Plan as the active phase.
+
+4. Confirm CLAUDE.md is complete by telling me:
+   — What this project does in one sentence
+   — What Phase 1 is and what its done criteria are
+   — Any sections still containing placeholder text that I need to fill in
+
+The project is ready to build.</pre></div>
+
+  <!-- LAUNCH CALLOUT -->
+  <div style="margin-top:16px;display:flex;align-items:center;gap:16px;padding:16px 20px;background:var(--ink);border-radius:6px;">
+    <div style="font-size:28pt;line-height:1;flex-shrink:0;">🚀</div>
+    <div>
+      <div style="font-size:9pt;font-weight:700;color:#fff;margin-bottom:3px;">The rocket is ready to launch.</div>
+      <div style="font-size:8.5pt;color:#94a3b8;line-height:1.6;">CLAUDE.md is initialized. The AI knows what you're building, how it's structured, what phase you're in, and what the rules are. Every session from here opens with Step 6 — open your project folder, state today's goal, and build.</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /page -->
+
+<!-- ═══════════════════════════════════════════ PART 2 -->
+<div class="part-header">
+  <div class="part-label">Part Two</div>
+  <div class="part-brand">CurieLabs<span>.ai</span></div>
+  <div class="part-title">Running Each Session</div>
+  <div class="part-desc">The build cycle &nbsp;·&nbsp; Repeat this for every session, every phase, every feature</div>
+</div>
+
+<div class="page">
+
+<div class="step">
+  <div class="step-header">
+    <span class="step-number">Step 06</span>
+    <span class="step-title">Open Every Session</span>
+  </div>
+  <p class="step-desc">Open Claude in your project folder — it finds CLAUDE.md automatically. This prompt orients the session, confirms Claude has the right context, and locks in today's goal before any work starts.</p>
+
+  <div style="background:var(--step-bg);border:1px solid var(--rule);border-radius:6px;padding:14px 16px;margin-bottom:14px;">
+    <div style="font-size:8pt;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:8px;">How to open a session in your project folder</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:9pt;color:var(--ink-light);">
+      <div><strong style="color:var(--ink);display:block;margin-bottom:2px;">Claude Code (terminal)</strong><code style="font-family:'JetBrains Mono',monospace;font-size:8pt;background:#fff;padding:2px 6px;border-radius:3px;border:1px solid var(--rule);">cd my-app && claude</code></div>
+      <div><strong style="color:var(--ink);display:block;margin-bottom:2px;">Cowork / Cursor / Windsurf</strong>Open the app → select your project folder</div>
+    </div>
+  </div>
+
+  <div class="prompt-label">Prompt — Session Open</div>
+  <div class="prompt-box"><pre>Read CLAUDE.md. If you cannot find it, stop and tell me before doing anything else.
+
+Confirm:
+1. What this project is in one sentence.
+2. Which Build Plan phase we are currently in and its done criteria.
+3. Any Critical Constraints relevant to today's work.
+4. Today's goal: <span class="placeholder">[YOUR ONE-SENTENCE GOAL FOR THIS SESSION]</span>
+
+Do not begin work until I confirm your understanding is correct.</pre></div>
+</div>
+
+<!-- BUILD LOOP - the heart of every session -->
+<div class="step" style="border:2px solid var(--accent);border-radius:8px;padding:28px 28px 24px;margin:4px 0;">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+    <span style="font-size:8pt;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);">The Build Loop</span>
+    <span style="font-size:8pt;color:var(--ink-muted);">— the heart of every session, repeated until the phase is done</span>
+  </div>
+  <div style="font-size:15pt;font-weight:700;color:var(--ink);letter-spacing:-0.01em;margin-bottom:10px;">Build It. Test It. Run It.</div>
+  <p class="step-desc" style="margin-bottom:20px;">This is where the work happens. One piece at a time — build the next component, verify it works, get the exact commands to run it yourself. Then repeat. Each iteration is small enough that if something goes wrong, you know exactly what changed.</p>
+
+  <div class="prompt-label">Prompt — Build the Next Piece</div>
+  <div class="prompt-box"><pre>Read CLAUDE.md. We are working on: <span class="placeholder">[current phase name and goal]</span>
+
+Build the next component: <span class="placeholder">[describe the specific thing being built this iteration]</span>
+
+When done:
+1. Tell me what files you created or changed and what each one does.
+2. Give me the exact terminal commands to start the app and test this — copy-paste
+   ready, nothing assumed. Include any environment setup needed.
+3. Tell me exactly what I should see or do to confirm it's working correctly.
+4. Tell me what failure looks like so I know the difference.
+5. Update Current State in CLAUDE.md to reflect what now works.
+</pre></div>
+
+  <div style="margin-top:16px;">
+    <div class="prompt-label">Prompt — How Do I Run This?</div>
+    <div class="prompt-box"><pre>Give me the complete instructions to run and test what we just built.
+
+1. Every command I need to run in order — copy-paste ready for the terminal.
+   Start from scratch as if I've just opened a new terminal window.
+2. The URL or interface to open in my browser.
+3. The exact steps to test this specific feature — what to click, type, or do.
+4. What I should see when it's working correctly.
+5. The most likely reason it might not work and what to check first.</pre></div>
+  </div>
+
+  <!-- THE LOOP VISUAL -->
+  <div style="margin-top:18px;display:flex;align-items:center;gap:0;border:1px solid var(--rule);border-radius:6px;overflow:hidden;">
+    <div style="flex:1;padding:12px 14px;text-align:center;border-right:1px solid var(--rule);">
+      <div style="font-size:14pt;margin-bottom:4px;">🔨</div>
+      <div style="font-size:8pt;font-weight:700;color:var(--ink);">Build</div>
+      <div style="font-size:7.5pt;color:var(--ink-muted);margin-top:2px;">One piece at a time</div>
+    </div>
+    <div style="padding:8px;color:var(--ink-muted);font-size:14pt;">→</div>
+    <div style="flex:1;padding:12px 14px;text-align:center;border-right:1px solid var(--rule);">
+      <div style="font-size:14pt;margin-bottom:4px;">▶️</div>
+      <div style="font-size:8pt;font-weight:700;color:var(--ink);">Run</div>
+      <div style="font-size:7.5pt;color:var(--ink-muted);margin-top:2px;">Exact commands, your terminal</div>
+    </div>
+    <div style="padding:8px;color:var(--ink-muted);font-size:14pt;">→</div>
+    <div style="flex:1;padding:12px 14px;text-align:center;border-right:1px solid var(--rule);">
+      <div style="font-size:14pt;margin-bottom:4px;">✅</div>
+      <div style="font-size:8pt;font-weight:700;color:var(--ink);">Confirm</div>
+      <div style="font-size:7.5pt;color:var(--ink-muted);margin-top:2px;">Does it do what you expected?</div>
+    </div>
+    <div style="padding:8px;color:var(--ink-muted);font-size:14pt;">→</div>
+    <div style="flex:1;padding:12px 14px;text-align:center;border-right:1px solid var(--rule);">
+      <div style="font-size:14pt;margin-bottom:4px;">📝</div>
+      <div style="font-size:8pt;font-weight:700;color:var(--ink);">Record</div>
+      <div style="font-size:7.5pt;color:var(--ink-muted);margin-top:2px;">CLAUDE.md updated</div>
+    </div>
+    <div style="padding:8px;color:var(--ink-muted);font-size:14pt;">→</div>
+    <div style="flex:1;padding:12px 14px;text-align:center;background:var(--accent-light);">
+      <div style="font-size:14pt;margin-bottom:4px;">🔁</div>
+      <div style="font-size:8pt;font-weight:700;color:var(--accent);">Repeat</div>
+      <div style="font-size:7.5pt;color:var(--ink-muted);margin-top:2px;">Next piece</div>
+    </div>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-header">
+    <span class="step-number">Step 07</span>
+    <span class="step-title">Scope Check</span>
+  </div>
+  <p class="step-desc">Use any time the AI starts working outside today's stated goal or proposes something out of scope.</p>
+  <div class="prompt-label">Prompt — Scope Check</div>
+  <div class="prompt-box"><pre>Stop. Today's goal is: <span class="placeholder">[restate the one-sentence goal]</span>
+Current Build Plan phase: <span class="placeholder">[phase name]</span>
+
+What you just proposed touches <span class="placeholder">[describe what drifted]</span>. That is not in scope today.
+
+Either: redo your proposal to achieve today's goal without touching out-of-scope
+components — or make the case for why these two things genuinely can't be separated
+so I can decide whether to expand scope deliberately.
+Do not make the change silently. Present the option and wait.</pre></div>
+</div>
+
+<div class="step">
+  <div class="step-header">
+    <span class="step-number">Step 08</span>
+    <span class="step-title">External API or Service Integration</span>
+  </div>
+  <p class="step-desc">Use before implementing anything that connects to an external service. The AI's training data has a cutoff date; APIs don't. Forces current documentation before a line is written.</p>
+  <div class="prompt-label">Prompt — External API Integration</div>
+  <div class="prompt-box"><pre>Before writing any code for this integration, go to: <span class="placeholder">[official documentation URL]</span>
+Read the current implementation guide for <span class="placeholder">[specific feature]</span>.
+
+Find and report: current authentication method; exact endpoints needed; required
+request format and parameters; response format and how to handle it; rate limits
+or quotas; any recent breaking changes or deprecated patterns.
+
+If anything conflicts with what you might assume from older knowledge, flag it.
+Only write code after I confirm your understanding of the current docs.</pre></div>
+</div>
+
+<div class="step">
+  <div class="step-header">
+    <span class="step-number">Step 09</span>
+    <span class="step-title">Close Every Session</span>
+  </div>
+  <p class="step-desc">The most important step in the guide. Tell Claude to update CLAUDE.md directly — no copying, no pasting. The project documents itself. The next session starts from exactly where this one ended.</p>
+  <div class="prompt-label">Prompt — Session Close &amp; Self-Assessment</div>
+  <div class="prompt-box"><pre>This session is ending. Update CLAUDE.md directly with the following:
+
+1. CURRENT STATE — what is now confirmed working; what is broken or newly discovered
+   to be broken; what is still unknown.
+2. BUILD PLAN — mark the current phase Complete if done criteria were met and activate
+   the next phase. If not complete, note what remains and any blockers.
+3. DEBUGGING HISTORY — add a row for anything that failed this session: what was
+   tried, what happened, root cause if known.
+4. LOCKED DESIGN DECISIONS — add any new architectural decisions made today with
+   their reasoning.
+5. WHAT'S NEXT — the first thing the next session should do.
+6. SESSION LOG — add an entry for today:
+   Phase / Attempted / Succeeded / Failed / New constraints / Plan changes.
+
+Write all updates to CLAUDE.md now. Confirm when done.</pre></div>
+</div>
+
+</div><!-- /page -->
+
+<!-- ═══════════════════════════════════════════ PRINCIPLES BRIDGE -->
+<div class="page" style="page-break-before:always;">
+  <div style="text-align:center;padding:32px 0 28px;">
+    <div style="font-size:8.5pt;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;">The Complete Build Cycle</div>
+    <div style="font-family:'Playfair Display',serif;font-size:22pt;color:var(--ink);margin-bottom:8px;">Open → Build → Test → Run → Close</div>
+    <div style="font-size:10pt;color:var(--ink-muted);max-width:440px;margin:0 auto;">Repeat for every session, every feature, every phase. When the Build Plan says done — you've shipped.</div>
+  </div>
+  <div style="height:1px;background:var(--rule);margin-bottom:28px;"></div>
+  <div style="font-size:8pt;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:14px;">The Eleven Principles — Keep These in Mind</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+    <div style="font-size:9pt;color:var(--ink-light);padding:8px 12px;background:var(--step-bg);border-radius:4px;line-height:1.5;"><span style="font-weight:700;color:var(--accent);margin-right:6px;">01</span><strong style="color:var(--ink);">Requirements before design.</strong> Know what you're building before designing anything.</div>
+    <div style="font-size:9pt;color:var(--ink-light);padding:8px 12px;background:var(--step-bg);border-radius:4px;line-height:1.5;"><span style="font-weight:700;color:var(--accent);margin-right:6px;">02</span><strong style="color:var(--ink);">Design before building.</strong> Architecture in writing, with reasoning, before code starts.</div>
+    <div style="font-size:9pt;color:var(--ink-light);padding:8px 12px;background:var(--step-bg);border-radius:4px;line-height:1.5;"><span style="font-weight:700;color:var(--accent);margin-right:6px;">03</span><strong style="color:var(--ink);">Scope the MVP explicitly.</strong> Decide what's in and out before building starts.</div>
+    <div style="font-size:9pt;color:var(--ink-light);padding:8px 12px;background:var(--step-bg);border-radius:4px;line-height:1.5;"><span style="font-weight:700;color:var(--accent);margin-right:6px;">04</span><strong style="color:var(--ink);">Build from a plan.</strong> Each phase has concrete done criteria. Meet them before moving on.</div>
+    <div style="font-size:9pt;color:var(--ink-light);padding:8px 12px;background:var(--step-bg);border-radius:4px;line-height:1.5;"><span style="font-weight:700;color:var(--accent);margin-right:6px;">05</span><strong style="color:var(--ink);">Build incrementally.</strong> One piece at a time. Confirm it works before adding the next.</div>
+    <div style="font-size:9pt;color:var(--ink-light);padding:8px 12px;background:var(--step-bg);border-radius:4px;line-height:1.5;"><span style="font-weight:700;color:var(--accent);margin-right:6px;">06</span><strong style="color:var(--ink);">CLAUDE.md is the project.</strong> If it isn't in the document, it doesn't exist.</div>
+    <div style="font-size:9pt;color:var(--ink-light);padding:8px 12px;background:var(--step-bg);border-radius:4px;line-height:1.5;"><span style="font-weight:700;color:var(--accent);margin-right:6px;">07</span><strong style="color:var(--ink);">Use authoritative sources.</strong> Fetch live documentation before any API work.</div>
+    <div style="font-size:9pt;color:var(--ink-light);padding:8px 12px;background:var(--step-bg);border-radius:4px;line-height:1.5;"><span style="font-weight:700;color:var(--accent);margin-right:6px;">08</span><strong style="color:var(--ink);">Lock decisions with reasoning.</strong> Record not just what you decided, but why.</div>
+    <div style="font-size:9pt;color:var(--ink-light);padding:8px 12px;background:var(--step-bg);border-radius:4px;line-height:1.5;"><span style="font-weight:700;color:var(--accent);margin-right:6px;">09</span><strong style="color:var(--ink);">Document failures immediately.</strong> A failure recorded happens only once.</div>
+    <div style="font-size:9pt;color:var(--ink-light);padding:8px 12px;background:var(--step-bg);border-radius:4px;line-height:1.5;"><span style="font-weight:700;color:var(--accent);margin-right:6px;">10</span><strong style="color:var(--ink);">Build the feedback loop.</strong> The project moves forward along the plan — never sideways.</div>
+    <div style="font-size:9pt;color:var(--ink-light);padding:8px 12px;background:var(--step-bg);border-radius:4px;line-height:1.5;grid-column:1 / -1;max-width:50%;"><span style="font-weight:700;color:var(--accent);margin-right:6px;">11</span><strong style="color:var(--ink);">Understand before fixing.</strong> Never ask for a fix before you understand the root cause.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ PART 3 - POWER TOOLS -->
+<div class="part-header">
+  <div class="part-label">Power Tools</div>
+  <div class="part-brand">CurieLabs<span>.ai</span></div>
+  <div class="part-title">When You Need More</div>
+  <div class="part-desc">Debugging &nbsp;·&nbsp; Recovery &nbsp;·&nbsp; Version control &nbsp;·&nbsp; Code quality &nbsp;·&nbsp; Advanced techniques</div>
+</div>
+
+<div class="page">
+  <p style="font-size:10.5pt;color:var(--ink-light);line-height:1.75;margin-bottom:28px;max-width:560px;">The build cycle in Part Two is all you need for most sessions. The tools in this section are for when things get harder — something breaks, the session goes sideways, you need to protect your work, or you want to take a hard look at what you've built. Use them as reference. You won't need all of them at once.</p>
+
+
+<div class="step">
+  <div class="step-header">
+    <span class="step-number">Step 10</span>
+    <span class="step-title">Diagnose Before You Fix</span>
+  </div>
+  <p class="step-desc">When something breaks, your first move is always to give Claude as much information as possible about exactly what you see. The more evidence you provide, the faster the diagnosis. Here are the four most powerful techniques — use them in combination.</p>
+
+  <!-- TECHNIQUE 1: COPY/PASTE THE ERROR -->
+  <div style="margin-bottom:20px;">
+    <div style="font-size:8.5pt;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink);margin-bottom:6px;">① Copy and paste the exact error — always</div>
+    <p style="font-size:9.5pt;color:var(--ink-light);line-height:1.65;margin-bottom:10px;">Never describe an error when you can copy it. The exact text of an error message — including the line numbers, file paths, and stack trace — contains the precise information Claude needs to diagnose the problem. A paraphrase loses critical detail. Select all the red text in your terminal or browser console, copy it, and paste it in.</p>
+    <div class="prompt-label">Prompt — Error Diagnosis</div>
+    <div class="prompt-box"><pre>Something is broken. Do not propose any fix yet.
+
+Here is the exact error: <span class="placeholder">[paste the complete error message, including any stack trace]</span>
+
+Explain:
+1. What this error means in plain language.
+2. Which specific file, function, or line is the source of the failure.
+3. WHY it happened — what caused the system to reach this state.
+4. If there are multiple possible causes, list them in order of likelihood.
+
+I will ask for a fix once I understand the problem.</pre></div>
+  </div>
+
+  <!-- TECHNIQUE 2: SCREENSHOT -->
+  <div style="margin-bottom:20px;">
+    <div style="font-size:8.5pt;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink);margin-bottom:6px;">② Show Claude what you see — attach a screenshot</div>
+    <p style="font-size:9.5pt;color:var(--ink-light);line-height:1.65;margin-bottom:10px;">If the problem is visual — a broken layout, an unexpected blank screen, a UI element in the wrong place — take a screenshot and attach it to your message. Claude can read images. Drag the screenshot directly into the chat window alongside your prompt. This is especially useful when the browser console shows no error but something still looks wrong.</p>
+    <div style="background:var(--step-bg);border:1px solid var(--rule);border-radius:6px;padding:12px 16px;margin-bottom:10px;">
+      <div style="font-size:8pt;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:8px;">How to take a screenshot</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:9pt;color:var(--ink-light);">
+        <div><strong style="color:var(--ink);display:block;margin-bottom:2px;">Mac</strong><code style="font-family:'JetBrains Mono',monospace;font-size:8pt;background:#fff;padding:2px 6px;border-radius:3px;border:1px solid var(--rule);">Cmd + Shift + 4</code> — drag to select area</div>
+        <div><strong style="color:var(--ink);display:block;margin-bottom:2px;">Windows</strong><code style="font-family:'JetBrains Mono',monospace;font-size:8pt;background:#fff;padding:2px 6px;border-radius:3px;border:1px solid var(--rule);">Win + Shift + S</code> — drag to select area</div>
+      </div>
+    </div>
+    <div class="prompt-label">Prompt — Visual Bug</div>
+    <div class="prompt-box"><pre>Something doesn't look right. I've attached a screenshot.
+
+Expected: <span class="placeholder">[describe what you expected to see]</span>
+Actual: <span class="placeholder">[describe what you actually see]</span>
+
+Identify what's causing the visual difference and propose a fix.</pre></div>
+  </div>
+
+  <!-- TECHNIQUE 3: READ THE LOGS -->
+  <div style="margin-bottom:20px;">
+    <div style="font-size:8.5pt;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink);margin-bottom:6px;">③ Tell Claude to read the logs</div>
+    <p style="font-size:9.5pt;color:var(--ink-light);line-height:1.65;margin-bottom:10px;">Every running application writes a log — a record of everything that happened, in order. When something fails silently (no visible error, but wrong behavior), the log usually contains the real story. Claude can read your log files directly from the project folder. If you don't know where your logs are, ask Claude to find them.</p>
+    <div class="prompt-label">Prompt — Read the Logs</div>
+    <div class="prompt-box"><pre>Something is failing but I don't have a clear error message.
+
+Read the application logs for this project. Look for:
+1. Any ERROR or WARNING entries around the time the problem occurred.
+2. The last successful operation before things went wrong.
+3. Any unexpected values, null responses, or timeout messages.
+
+Tell me what the logs reveal. If you can't find the log files, tell me where
+they should be and how to find them for this stack.</pre></div>
+  </div>
+
+  <!-- TECHNIQUE 4: DEBUGGING TRAPS -->
+  <div style="margin-bottom:4px;">
+    <div style="font-size:8.5pt;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink);margin-bottom:6px;">④ Set debugging traps to isolate exactly where it breaks</div>
+    <p style="font-size:9.5pt;color:var(--ink-light);line-height:1.65;margin-bottom:10px;">When you can't tell which part of the code is causing a problem, ask Claude to insert debug statements — lines that print the value of key variables at specific points as the code runs. You then run the app, watch what gets printed in the terminal, and see exactly where the expected value turns wrong. Once the problem is isolated, Claude removes the traps and fixes the real issue.</p>
+    <div class="prompt-label">Prompt — Set Debugging Traps</div>
+    <div class="prompt-box"><pre>I need to isolate exactly where this problem is occurring.
+
+The symptom: <span class="placeholder">[describe what goes wrong and when]</span>
+The suspected area: <span class="placeholder">[which feature, function, or flow you think is involved]</span>
+
+Add debugging statements at key points in the relevant code to print:
+- The value of important variables as they change
+- Which functions are being called and in what order
+- The exact point where the value becomes wrong or the flow goes unexpected
+
+Do not fix anything yet — just instrument the code so I can see what's happening.
+Tell me exactly what to run and what to look for in the output.
+Once we've identified the problem, remove all debug statements before fixing.</pre></div>
+  </div>
+
+  <!-- DEBUGGING SUMMARY BOX -->
+  <div style="margin-top:18px;background:var(--ink);border-radius:6px;padding:16px 20px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+    <div style="text-align:center;">
+      <div style="font-size:16pt;margin-bottom:4px;">📋</div>
+      <div style="font-size:8pt;font-weight:700;color:#fff;margin-bottom:2px;">Copy the error</div>
+      <div style="font-size:7.5pt;color:#94a3b8;line-height:1.4;">Exact text, not a paraphrase</div>
+    </div>
+    <div style="text-align:center;">
+      <div style="font-size:16pt;margin-bottom:4px;">📸</div>
+      <div style="font-size:8pt;font-weight:700;color:#fff;margin-bottom:2px;">Screenshot it</div>
+      <div style="font-size:7.5pt;color:#94a3b8;line-height:1.4;">Drag into chat when it's visual</div>
+    </div>
+    <div style="text-align:center;">
+      <div style="font-size:16pt;margin-bottom:4px;">📄</div>
+      <div style="font-size:8pt;font-weight:700;color:#fff;margin-bottom:2px;">Read the logs</div>
+      <div style="font-size:7.5pt;color:#94a3b8;line-height:1.4;">The real story is always there</div>
+    </div>
+    <div style="text-align:center;">
+      <div style="font-size:16pt;margin-bottom:4px;">🪤</div>
+      <div style="font-size:8pt;font-weight:700;color:#fff;margin-bottom:2px;">Set traps</div>
+      <div style="font-size:7.5pt;color:#94a3b8;line-height:1.4;">Print values at every step</div>
+    </div>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-header">
+    <span class="step-number">Step 11</span>
+    <span class="step-title">Recover a Runaway Session</span>
+  </div>
+  <p class="step-desc">Use when multiple changes have been made, something is broken, and you're not sure what changed or in what order.</p>
+  <div class="prompt-label">Prompt — Session Recovery</div>
+  <div class="prompt-box"><pre>Stop all changes. This session has gone off the rails.
+Without making any further modifications:
+
+1. List every change made to the codebase in this session, in order.
+2. Identify what you believe is currently broken and your best theory why.
+3. Identify the last point in this session where everything was working.
+4. Propose the minimum rollback needed to return to that working state — not to
+   fix everything, just to reach stable ground.
+
+Once I confirm the rollback, I'll decide whether to continue or end the session
+and capture what we learned.</pre></div>
+</div>
+
+<div class="step">
+  <div class="step-header">
+    <span class="step-number">Step 12</span>
+    <span class="step-title">Get Unstuck</span>
+  </div>
+  <p class="step-desc">Use when you've lost the thread — unclear on priority, phase, or what to do next.</p>
+  <div class="prompt-label">Prompt — Unstuck Assessment</div>
+  <div class="prompt-box"><pre>I'm not sure what to do next. Do not write any code.
+Read CLAUDE.md and review the current project state.
+
+Give me an honest assessment:
+1. What is the highest-priority broken thing right now?
+2. What is the highest-value next thing to build, assuming nothing is broken?
+3. Is there anything I'm ignoring that will become a serious problem later?
+4. Is the Build Plan sequence still correct, or should it be reordered?
+
+Be direct. If I should slow down or consolidate before building more, say so.</pre></div>
+</div>
+
+<div class="step">
+  <div class="step-header">
+    <span class="step-number">Step 13</span>
+    <span class="step-title">Consolidation Session</span>
+  </div>
+  <p class="step-desc">Run every few sessions or whenever the project feels chaotic. You build nothing. You make everything accurate so the next phase starts from solid ground.</p>
+  <div class="prompt-label">Prompt — Consolidation</div>
+  <div class="prompt-box"><pre>This is a consolidation session. We are not building anything.
+Goal: make CLAUDE.md accurately reflect the current state of the project.
+
+Read CLAUDE.md and examine all files in this project folder.
+
+1. ARCHITECTURE AUDIT — does the Architecture Overview match what was actually
+   built, or has it drifted? Identify gaps.
+2. BUILD PLAN AUDIT — which phases are genuinely complete? Which are partial?
+   Should the sequence be reordered given what we now know?
+3. CONSTRAINTS AUDIT — are there rules in the code not yet documented in
+   Critical Constraints or Locked Decisions?
+4. CURRENT STATE — produce an accurate Current State based on reality, not intent.
+5. WHAT'S NEXT — propose a clean priority list for the next phase.
+
+Output the revised CLAUDE.md sections. I will review and apply them.</pre></div>
+</div>
+
+</div><!-- /page -->
+
+<!-- ═══════════════════════════════════════════ PART 4 -->
+<div class="part-header">
+  <div class="part-label">Part Four</div>
+  <div class="part-brand">CurieLabs<span>.ai</span></div>
+  <div class="part-title">Reference</div>
+  <div class="part-desc">Prompt Index &nbsp;·&nbsp; Quick lookup for every prompt in the Playbook</div>
+</div>
+
+<div class="page">
+
+<div class="section-title">The Eleven Principles</div>
+
+<div class="principles">
+  <div class="principle">
+    <div class="principle-num">01</div>
+    <div class="principle-name">Requirements before design</div>
+    <div class="principle-body">Know exactly what you're building before designing anything.</div>
+  </div>
+  <div class="principle">
+    <div class="principle-num">02</div>
+    <div class="principle-name">Design before building</div>
+    <div class="principle-body">Get architecture in writing, with reasoning, before code starts.</div>
+  </div>
+  <div class="principle">
+    <div class="principle-num">03</div>
+    <div class="principle-name">Scope the MVP explicitly</div>
+    <div class="principle-body">Decide what's in and out before building. State it in one sentence.</div>
+  </div>
+  <div class="principle">
+    <div class="principle-num">04</div>
+    <div class="principle-name">Build from a plan</div>
+    <div class="principle-body">Work in phases with concrete done criteria. Meet them before moving on.</div>
+  </div>
+  <div class="principle">
+    <div class="principle-num">05</div>
+    <div class="principle-name">Build incrementally</div>
+    <div class="principle-body">Start with the smallest working thing. Evaluate. Correct. Add the next layer.</div>
+  </div>
+  <div class="principle">
+    <div class="principle-num">06</div>
+    <div class="principle-name">CLAUDE.md is the project</div>
+    <div class="principle-body">If it isn't in the document, it doesn't exist. Update it every session.</div>
+  </div>
+  <div class="principle">
+    <div class="principle-num">07</div>
+    <div class="principle-name">Use authoritative sources</div>
+    <div class="principle-body">Fetch live documentation before any API or external service work.</div>
+  </div>
+  <div class="principle">
+    <div class="principle-num">08</div>
+    <div class="principle-name">Lock decisions with reasoning</div>
+    <div class="principle-body">Record not just what you decided, but why — so it can't be undone accidentally.</div>
+  </div>
+  <div class="principle">
+    <div class="principle-num">09</div>
+    <div class="principle-name">Document failures immediately</div>
+    <div class="principle-body">A failure recorded is a failure that happens only once.</div>
+  </div>
+  <div class="principle">
+    <div class="principle-num">10</div>
+    <div class="principle-name">Build the feedback loop</div>
+    <div class="principle-body">The project moves forward along the plan — never sideways or backward unless the plan is explicitly updated.</div>
+  </div>
+  <div class="principle" style="grid-column: 1 / -1; max-width: 340px;">
+    <div class="principle-num">11</div>
+    <div class="principle-name">Understand before fixing</div>
+    <div class="principle-body">Never ask for a fix before you understand the root cause.</div>
+  </div>
+</div>
+
+<div class="section-title" style="margin-top: 48px;">Prompt Index</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Step</th>
+      <th>Prompt</th>
+      <th>When to use</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="background:#f0f4ff;"><td colspan="3" style="font-size:8pt;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);padding:7px 12px;">Part 1 — Starting a New Project</td></tr>
+    <tr><td>01</td><td>Requirements Interview</td><td>Starting a new project</td></tr>
+    <tr><td>02</td><td>Architecture Design</td><td>After requirements</td></tr>
+    <tr><td>03</td><td>MVP Scope</td><td>After architecture</td></tr>
+    <tr><td>04</td><td>Build Plan</td><td>After MVP scope</td></tr>
+    <tr><td>05</td><td>Finalize CLAUDE.md</td><td>Once, at end of setup — the launchpad</td></tr>
+    <tr style="background:#f0f4ff;"><td colspan="3" style="font-size:8pt;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);padding:7px 12px;">Part 2 — Running Each Session</td></tr>
+    <tr><td>06</td><td>Session Open</td><td>Start of every session</td></tr>
+    <tr><td style="color:var(--accent);font-weight:700;">●</td><td style="font-weight:700;">Build It · Run It · Test It</td><td style="font-weight:600;color:var(--ink);">The core loop — repeat every iteration</td></tr>
+    <tr><td>07</td><td>Scope Check</td><td>When session starts drifting</td></tr>
+    <tr><td>08</td><td>External API Integration</td><td>Before connecting to any service</td></tr>
+    <tr><td>09</td><td>Session Close / Self-Assessment</td><td>End of every session</td></tr>
+    <tr style="background:#f0f4ff;"><td colspan="3" style="font-size:8pt;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);padding:7px 12px;">Power Tools — When You Need Them</td></tr>
+    <tr><td>10</td><td>Root Cause Diagnosis</td><td>When something breaks</td></tr>
+    <tr><td>11</td><td>Session Recovery</td><td>When changes have piled up wrong</td></tr>
+    <tr><td>12</td><td>Unstuck Assessment</td><td>When you've lost the thread</td></tr>
+    <tr><td>13</td><td>Consolidation</td><td>Every few sessions, or when things feel chaotic</td></tr>
+    <tr><td>14</td><td>Create CLAUDE.md from Template</td><td>Starting any new project</td></tr>
+    <tr><td>15</td><td>Git Setup</td><td>Once per project, before first commit</td></tr>
+    <tr><td>16</td><td>Git Commit &amp; Push</td><td>End of every session</td></tr>
+    <tr><td>17</td><td>Code Quality Audit</td><td>After a working version exists</td></tr>
+  </tbody>
+</table>
+
+<div class="footer">
+  <span>The AI Builder's Playbook · curielabs.ai</span>
+  <span>Print as PDF for best results</span>
+</div>
+
+</div><!-- /page -->
+
+<!-- ═══════════════════════════════════════════ PART 5 -->
+<div class="part-header">
+  <div class="part-label">Part Five</div>
+  <div class="part-brand">CurieLabs<span>.ai</span></div>
+  <div class="part-title">Your Project Memory File</div>
+  <div class="part-desc">The CLAUDE.md template &nbsp;·&nbsp; How to create it &nbsp;·&nbsp; What every section does</div>
+</div>
+
+<div class="page">
+
+<p style="font-size:10.5pt;line-height:1.75;color:var(--ink-light);margin-bottom:28px;max-width:580px;">
+  <strong style="color:var(--ink);">CLAUDE.md is the single most important file in your project.</strong> It is the living document every AI session reads first and updates last. The template below captures everything your project needs to stay on track — architecture, decisions, constraints, what's working, what's broken, and what's next. You never fill it in from scratch; you use the prompt below to have Claude generate it from your requirements.
+</p>
+
+<div class="step">
+  <div class="step-header">
+    <span class="step-number">Step 14</span>
+    <span class="step-title">Create CLAUDE.md from the Template</span>
+  </div>
+  <p class="step-desc">Paste this prompt into Claude along with the template below. Claude will create the actual file in your project folder, filled in with your project's specifics. Do this once, before your first working session.</p>
+  <div class="prompt-label">Prompt — Create CLAUDE.md File</div>
+  <div class="prompt-box"><pre>Create a file called CLAUDE.md in this project folder using the template on the
+following page of the Playbook. Copy the entire template block and include it
+after this instruction.
+
+For every [bracketed section]: leave the placeholder text exactly as written —
+we will fill it in during Steps 1–4 of the Playbook.
+
+Set up the file now. Confirm the path when done.</pre></div>
+
+  <div style="margin-top:12px;background:var(--accent-light);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:12px 16px;font-size:9pt;color:var(--ink-light);line-height:1.65;">
+    <strong style="color:var(--ink);">Do this once, before Step 01.</strong> After that, every step writes directly into CLAUDE.md. You never need to re-create it or copy it between sessions — Claude always reads the live file from the project folder.
+  </div>
+</div>
+
+</div><!-- /page -->
+
+<!-- CLAUDE.MD TEMPLATE PAGE -->
+<div class="page" style="padding-top:36px;">
+
+<div style="border:1.5px solid var(--rule);border-radius:6px;overflow:hidden;margin-bottom:36px;">
+  <div style="background:var(--ink);color:#fff;padding:12px 20px;display:flex;align-items:center;gap:12px;">
+    <span style="font-size:8pt;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#60a5fa;">Template</span>
+    <span style="font-size:10pt;font-weight:600;">CLAUDE.md — Copy this entire block</span>
+    <span style="margin-left:auto;font-size:8.5pt;color:#94a3b8;">Save as CLAUDE.md in your project root</span>
+  </div>
+  <div style="background:#0d1117;padding:20px 24px;">
+    <pre style="font-family:'JetBrains Mono',monospace;font-size:7.8pt;line-height:1.65;color:#c9d1d9;white-space:pre-wrap;word-break:break-word;"><span style="color:#60a5fa;"># [Project Name] — Engineering Guide</span>
+
+<span style="color:#8b949e;">&gt; Living document. Read at session start. Update at session end.
+&gt; Replace all [bracketed text] with your project specifics as you build.</span>
+
+<span style="color:#60a5fa;">## What This Project Is</span>
+[2–4 sentences. Plain language. What it does, who it's for, what makes it distinct.]
+
+<span style="color:#60a5fa;">## Always Read First</span>
+1. This file — architecture, constraints, current state
+2. [filename] — [what it contains and when to read it]
+
+<span style="color:#60a5fa;">## Session Protocol — Mandatory</span>
+<span style="color:#f0883e;">### Before starting any task</span>
+1. Read this entire CLAUDE.md. Do not skip sections.
+2. Check Current State — what's working, what's broken, what's next.
+3. Check Debugging History for the area you're working in. Do not repeat a failed approach.
+4. For any external API: fetch live documentation first. Never rely on training data.
+5. State today's goal in one sentence. Do not begin until confirmed.
+<span style="color:#f0883e;">### During the session</span>
+6. Stay on the current Build Plan phase. Do not drift without an explicit decision.
+7. When an attempt fails, record it in Debugging History immediately.
+8. Do not accept changes to out-of-scope components.
+9. If you discover an undocumented constraint, add it to Critical Constraints.
+<span style="color:#f0883e;">### At the end of every session</span>
+10. Update Current State, Build Plan status, Debugging History, What's Next, Session Log.
+11. Add new architectural decisions to Locked Design Decisions with reasoning.
+<span style="color:#8b949e;">Goal: no session repeats a failure a previous session diagnosed.
+The project moves forward along the plan — never sideways or backwards
+unless the plan is explicitly updated with new learnings.</span>
+
+<span style="color:#60a5fa;">## Architecture Overview</span>
+<span style="color:#f0883e;">### Components</span>
+[Component 1] — [what it does]
+[Component 2] — [what it does]
+<span style="color:#f0883e;">### How They Connect</span>
+[Describe data flow: what happens when a user does the primary action, step by step.]
+<span style="color:#f0883e;">### File Structure</span>
+[project-root]/
+├── [file or folder]    ← [one-line description]
+└── [file or folder]    ← [one-line description]
+
+<span style="color:#60a5fa;">## Running the Project</span>
+<span style="color:#8b949e;"># Start backend:</span>  [command]
+<span style="color:#8b949e;"># Start frontend:</span>  [command]
+<span style="color:#8b949e;"># Local URL:</span>       http://localhost:[PORT]
+Environment variables (in .env — never commit this file):
+  [VAR_NAME] — [what it's for]
+
+<span style="color:#60a5fa;">## Critical Constraints</span>
+<span style="color:#8b949e;">&gt; State as direct prohibitions. Add as discovered. Never remove.</span>
+- NEVER [rule]: [consequence if violated]
+- NEVER [rule]: [consequence if violated]
+
+<span style="color:#60a5fa;">## Locked Design Decisions</span>
+| Question | Decision | Reasoning |
+|---|---|---|
+| [What was decided?] | [What was chosen] | [Why — alternatives rejected] |
+
+<span style="color:#60a5fa;">## Component / Service Status</span>
+<span style="color:#8b949e;">&gt; Prevents the AI from treating dead code as active.</span>
+| Component | File | Status | Notes |
+|---|---|---|---|
+| [Name] | [path] | Active | [what it does] |
+| [Name] | [path] | Legacy — do not use | [what replaced it] |
+
+<span style="color:#60a5fa;">## Build Plan</span>
+<span style="color:#f0883e;">### Phase 1 — [Name]</span>
+Goal: [single sentence]
+Builds: [specific components]
+Done when: [concrete, observable test]
+Status: [ ] Not started
+
+<span style="color:#f0883e;">### Phase 2 — [Name]</span>
+Goal:  Builds:  Done when:  Status: [ ] Not started
+
+<span style="color:#60a5fa;">## MVP Scope</span>
+IN: [feature — one-line reason]
+OUT: [feature — one-line reason why deferred]
+MVP in one sentence: [what this version does, for whom]
+
+<span style="color:#60a5fa;">## Current State</span>
+<span style="color:#f0883e;">Confirmed Working:</span> [list]
+<span style="color:#f0883e;">Known Issues:</span> [list]
+<span style="color:#f0883e;">Unknown / Needs Investigation:</span> [list]
+Active phase: [Phase name] — Remaining: [what's left]
+
+<span style="color:#60a5fa;">## What's Next</span>
+1. [Highest priority — specific enough to start immediately]
+2. [Second priority]
+
+<span style="color:#60a5fa;">## External Services and APIs</span>
+<span style="color:#8b949e;">&gt; Fetch live docs from these URLs before any integration work. Never assume.</span>
+| Service | Documentation URL | Auth Method | Status |
+|---|---|---|---|
+| [Name] | [URL] | [how auth works] | [integrated / pending] |
+
+<span style="color:#60a5fa;">## Debugging History</span>
+<span style="color:#8b949e;">&gt; Add a row when something fails. Complete it when root cause is known. Never delete rows.</span>
+| Date | What Was Tried | What Happened | Root Cause |
+|---|---|---|---|
+| — | — | — | — |
+
+<span style="color:#60a5fa;">## Session Log</span>
+<span style="color:#8b949e;">&gt; One entry per session, written during end-of-session self-assessment.</span>
+<span style="color:#f0883e;">### [YYYY-MM-DD]</span>
+Phase: / Attempted: / Succeeded: / Failed: / New constraints: / Plan changes:
+
+<span style="color:#60a5fa;">## Authoritative Sources</span>
+| Service / Library | Documentation URL | Last Verified |
+|---|---|---|
+| [Name] | [URL] | [date] |
+
+<span style="color:#8b949e;">---
+CLAUDE.md reflects the current true state of the project.
+If something here is wrong, correct it immediately.
+A wrong document is worse than no document.</span></pre>
+  </div>
+</div>
+
+</div><!-- /page -->
+
+<!-- ═══════════════════════════════════════════ PART 6 -->
+<div class="part-header">
+  <div class="part-label">Part Six</div>
+  <div class="part-brand">CurieLabs<span>.ai</span></div>
+  <div class="part-title">Your Workspace</div>
+  <div class="part-desc">Folders &nbsp;·&nbsp; Ports &nbsp;·&nbsp; API Keys &nbsp;·&nbsp; Running Multiple Projects</div>
+</div>
+
+<div class="page">
+
+<div style="font-size:10.5pt;line-height:1.75;color:var(--ink-light);margin-bottom:32px;max-width:580px;">
+  Before you build anything, set up a workspace that stays organized as your project count grows. The conventions in this section are the ones Claude expects — using them means you spend less time explaining where things are and more time building.
+</div>
+
+<!-- FOLDER ORGANIZATION -->
+<div class="step">
+  <div class="step-header">
+    <span class="step-number">Concept</span>
+    <span class="step-title">Folder Organization</span>
+  </div>
+  <p class="step-desc">Keep all projects under one parent folder. Each project gets its own subfolder. Claude Code is started from the project folder — not the parent — so it sees only the relevant code.</p>
+
+  <div style="background:var(--step-bg);border:1px solid var(--rule);border-radius:6px;padding:18px 20px;margin-bottom:16px;">
+    <div style="font-size:8pt;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:12px;">Recommended Structure</div>
+    <pre style="font-family:'JetBrains Mono',monospace;font-size:8.5pt;line-height:1.7;color:var(--ink);"><span style="color:var(--accent);font-weight:600;">~/projects/</span>
+├── <span style="color:var(--accent);">my-app/</span>              ← Project A root (start Claude Code here)
+│   ├── CLAUDE.md        ← Project A memory document
+│   ├── .env             ← API keys — never shared or committed
+│   ├── .gitignore       ← Tells git what NOT to track
+│   ├── backend/
+│   └── frontend/
+│
+├── <span style="color:var(--accent);">second-project/</span>      ← Project B root
+│   ├── CLAUDE.md
+│   ├── .env
+│   └── src/
+│
+└── <span style="color:var(--accent);">experiment/</span>          ← Low-stakes exploration project</pre>
+  </div>
+
+  <p class="step-desc" style="margin-top:8px;">When you open Claude Code, navigate into the specific project folder first. Claude will automatically read the CLAUDE.md it finds there — giving it the right memory for that project and nothing else.</p>
+</div>
+
+<!-- PORTS -->
+<div class="step">
+  <div class="step-header">
+    <span class="step-number">Concept</span>
+    <span class="step-title">Ports — Why Projects Use Different Numbers</span>
+  </div>
+  <p class="step-desc">When you run a project locally, your computer opens it at an address like <strong style="color:var(--ink);font-style:normal;">http://localhost:3000</strong>. The number (3000) is the port — think of it as a door on your computer. Each running project needs its own door, or they collide.</p>
+
+  <div style="background:var(--step-bg);border:1px solid var(--rule);border-radius:6px;padding:18px 20px;margin-bottom:16px;">
+    <div style="font-size:8pt;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:10px;">Common Port Conventions</div>
+    <table style="margin-top:0;">
+      <thead><tr><th>Port</th><th>Typically used for</th></tr></thead>
+      <tbody>
+        <tr><td style="color:var(--accent);font-weight:600;">3000</td><td>React / Vite frontend (default)</td></tr>
+        <tr><td style="color:var(--accent);font-weight:600;">5000</td><td>Flask / Python backend (default)</td></tr>
+        <tr><td style="color:var(--accent);font-weight:600;">8000</td><td>FastAPI / Django backend</td></tr>
+        <tr><td style="color:var(--accent);font-weight:600;">8080</td><td>Alternative frontend or proxy</td></tr>
+        <tr><td style="color:var(--accent);font-weight:600;">5432</td><td>PostgreSQL database (default)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="step-desc">If you run two projects that both try to use port 3000, the second one will fail with a confusing error. Assign each project its own port range and document it in CLAUDE.md under "Running the Project." Tell Claude which port to use and it will configure everything accordingly.</p>
+
+  <div class="prompt-label">Prompt — Assign Ports</div>
+  <div class="prompt-box"><pre>Assign port numbers for this project so they don't conflict with my other projects.
+My other projects use these ports: <span class="placeholder">[list ports already in use, or "none yet"]</span>
+
+Pick an available port for:
+- The frontend (the UI I open in a browser)
+- The backend API server
+- Any database, if applicable
+
+Use these ports consistently throughout the project. Update CLAUDE.md under
+"Running the Project" with the local URLs. Never change these ports without
+updating CLAUDE.md and telling me.</pre></div>
+</div>
+
+<!-- API KEYS -->
+<div class="step">
+  <div class="step-header">
+    <span class="step-number">Concept</span>
+    <span class="step-title">API Keys &amp; Environment Variables</span>
+  </div>
+  <p class="step-desc">An API key is a secret password that lets your app use an external service — an AI model, a payment system, a map provider. These keys must be kept private. If they leak into public code, someone else can use your account and run up your bill.</p>
+
+  <div style="background:#fef3c7;border-left:3px solid #f59e0b;border-radius:0 6px 6px 0;padding:14px 18px;margin-bottom:16px;">
+    <div style="font-size:9pt;font-weight:700;color:#92400e;margin-bottom:4px;">The Golden Rule</div>
+    <div style="font-size:9.5pt;color:#78350f;line-height:1.6;">API keys live in a file called <strong>.env</strong> in your project root. This file is <strong>never</strong> shared, never emailed, never committed to git, and never pasted into a chat. Claude reads it from your disk — you never need to paste the actual keys into a conversation.</div>
+  </div>
+
+  <div style="background:var(--step-bg);border:1px solid var(--rule);border-radius:6px;padding:18px 20px;margin-bottom:16px;">
+    <div style="font-size:8pt;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:10px;">What a .env file looks like</div>
+    <pre style="font-family:'JetBrains Mono',monospace;font-size:8.5pt;line-height:1.7;color:var(--ink);">OPENAI_API_KEY=sk-proj-abc123...
+GEMINI_API_KEY=AIzaSy...
+DATABASE_URL=postgresql://user:pass@localhost:5432/mydb
+STRIPE_SECRET_KEY=sk_live_...</pre>
+  </div>
+
+  <div class="prompt-label">Prompt — Set Up Environment Variables</div>
+  <div class="prompt-box"><pre>Set up environment variable handling for this project.
+
+1. Create a .env file in the project root with placeholder entries for
+   every API key or secret this project will need:
+   <span class="placeholder">[list the services: e.g., OpenAI, Stripe, database, etc.]</span>
+
+2. Create a .env.example file with the same keys but empty values —
+   this is safe to commit and shows collaborators what keys are needed.
+
+3. Ensure .env is in .gitignore so it can never be accidentally committed.
+
+4. Configure the application to read these values from the environment,
+   never hardcoded in source files.
+
+5. Add the variable names (not values) to CLAUDE.md under "Running the Project."</pre></div>
+</div>
+
+<!-- MULTIPLE PROJECTS -->
+<div class="step">
+  <div class="step-header">
+    <span class="step-number">Concept</span>
+    <span class="step-title">Running Multiple Projects in Parallel</span>
+  </div>
+  <p class="step-desc">It's common to have several projects active at once — a main product, an experiment, a tool you built to support the main one. Claude Code handles this cleanly because its memory is entirely in the CLAUDE.md of whichever folder you start it from.</p>
+
+  <div style="background:var(--step-bg);border:1px solid var(--rule);border-radius:6px;padding:18px 20px;margin-bottom:16px;">
+    <div style="font-size:9pt;font-weight:600;color:var(--ink);margin-bottom:8px;">How parallel projects stay separate</div>
+    <div style="font-size:9.5pt;color:var(--ink-light);line-height:1.7;">
+      Each project has its own CLAUDE.md — its own memory, its own build plan, its own constraints. When you start a session, you navigate into that project's folder first. Claude reads only that project's CLAUDE.md and has no knowledge of your other projects unless you explicitly bring it in.<br><br>
+      This means you can have five projects active simultaneously with zero confusion — as long as each has its own folder, its own CLAUDE.md, and its own port assignments.
+    </div>
+  </div>
+
+  <div class="prompt-label">Prompt — Multi-Project Workspace Setup</div>
+  <div class="prompt-box"><pre>I have multiple projects and need to organize them cleanly.
+
+Projects: <span class="placeholder">[list each project and what it does in one line]</span>
+Parent folder: <span class="placeholder">[e.g., ~/projects/ or ~/Documents/dev/]</span>
+
+For each project:
+1. Create its folder under the parent if it doesn't exist.
+2. Create a minimal CLAUDE.md stub with the project name and a one-sentence description.
+3. Create a .env placeholder and .gitignore.
+4. Assign a unique port range (frontend + backend) that doesn't conflict across projects.
+
+Produce a summary table showing: project name, folder path, frontend port,
+backend port. I'll refer to this when starting sessions.</pre></div>
+</div>
+
+</div><!-- /page -->
+
+<!-- ═══════════════════════════════════════════ PART 7 -->
+<div class="part-header">
+  <div class="part-label">Part Seven</div>
+  <div class="part-brand">CurieLabs<span>.ai</span></div>
+  <div class="part-title">Version Control</div>
+  <div class="part-desc">Git &nbsp;·&nbsp; GitHub &nbsp;·&nbsp; How to never lose your work</div>
+</div>
+
+<div class="page">
+
+<div style="font-size:10.5pt;line-height:1.75;color:var(--ink-light);margin-bottom:32px;max-width:580px;">
+  <strong style="color:var(--ink);">The single biggest mistake non-technical builders make is not using version control.</strong> Without it, one bad session can destroy days of work with no way to recover. With it, every working state of your project is preserved forever. Claude sets this up and runs it on your behalf — you just need to understand what it's doing and why.
+</div>
+
+<!-- WHAT IS GIT -->
+<div class="step">
+  <div class="step-header">
+    <span class="step-number">Concept</span>
+    <span class="step-title">What Git Is</span>
+  </div>
+  <p class="step-desc">Git is a time machine for your code. Every time you make a <em>commit</em>, Git takes a snapshot of your entire project at that moment. If a future session breaks something, you can travel back to any previous snapshot and restore it — or compare what changed between any two points in time.</p>
+
+  <div style="background:var(--step-bg);border:1px solid var(--rule);border-radius:6px;padding:18px 20px;margin-bottom:16px;">
+    <div style="font-size:9pt;font-weight:600;color:var(--ink);margin-bottom:10px;">Key concepts, plain language</div>
+    <div style="display:grid;grid-template-columns:110px 1fr;gap:8px 16px;font-size:9.5pt;">
+      <div style="font-weight:700;color:var(--accent);">Repository</div><div style="color:var(--ink-light);">Your project folder, tracked by git. Contains the full history of every change ever made.</div>
+      <div style="font-weight:700;color:var(--accent);">Commit</div><div style="color:var(--ink-light);">A named snapshot. "Added login screen" or "Fixed audio playback crash." You can return to any commit.</div>
+      <div style="font-weight:700;color:var(--accent);">Branch</div><div style="color:var(--ink-light);">A parallel copy of the project. Experiment freely on a branch without touching the working version.</div>
+      <div style="font-weight:700;color:var(--accent);">.gitignore</div><div style="color:var(--ink-light);">A list of files git should never track — API keys, passwords, generated files, huge dependencies.</div>
+      <div style="font-weight:700;color:var(--accent);">Rollback</div><div style="color:var(--ink-light);">Returning the project to a previous commit. The primary recovery tool when a session goes wrong.</div>
+    </div>
+  </div>
+
+  <div class="prompt-label">Prompt — Git Setup (run once per project)</div>
+  <div class="prompt-box"><pre>Set up git version control for this project.
+
+1. Initialize a git repository if one doesn't exist.
+2. Create a .gitignore that excludes: node_modules, .env, any file containing
+   API keys or secrets, build output folders (dist/, build/, __pycache__/),
+   log files, and OS files (.DS_Store, Thumbs.db).
+3. Make an initial commit of all current project files with the message:
+   "Initial commit — [project name] project scaffold"
+4. Confirm the repository is initialized and the first commit is recorded.
+
+From this point forward: after every working session, commit all changes
+with a clear descriptive message summarizing what was built or fixed.</pre></div>
+</div>
+
+<!-- WHAT IS GITHUB -->
+<div class="step">
+  <div class="step-header">
+    <span class="step-number">Concept</span>
+    <span class="step-title">What GitHub Is</span>
+  </div>
+  <p class="step-desc">Git lives on your local computer. GitHub is a cloud backup of your git history. If your computer is lost, stolen, or fails, your entire project — every commit, every snapshot — is safe on GitHub. It also makes it easy to share projects or collaborate.</p>
+
+  <div style="background:var(--accent-light);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:14px 18px;margin-bottom:16px;">
+    <div style="font-size:9.5pt;color:var(--ink);line-height:1.65;">GitHub is free for personal use at <strong>github.com</strong>. Create an account, then use the prompt below to have Claude push your project there. You only need to do the account setup once.</div>
+  </div>
+
+  <div class="prompt-label">Prompt — Push to GitHub</div>
+  <div class="prompt-box"><pre>Push this project to GitHub for cloud backup.
+
+My GitHub username: <span class="placeholder">[your username]</span>
+Repository name: <span class="placeholder">[project-name — lowercase, hyphens not spaces]</span>
+Visibility: <span class="placeholder">[private (recommended) or public]</span>
+
+1. Guide me through creating the repository on github.com if it doesn't exist.
+2. Add the GitHub remote to this local repository.
+3. Push the current branch and all commits.
+4. Confirm the push succeeded.
+
+From this point forward: after every local commit, also push to GitHub so
+the cloud backup stays current.</pre></div>
+
+  <div class="prompt-label" style="margin-top:16px;">Prompt — Commit &amp; Push at Session End</div>
+  <div class="prompt-box"><pre>Commit all changes from this session and push to GitHub.
+
+Write a commit message that clearly describes what was built or changed today.
+Format: "[type]: [description]"
+Types: feat (new feature), fix (bug fix), refactor (restructure), docs (documentation)
+Example: "feat: add audio playback controls to interview screen"
+
+1. Stage all changed files.
+2. Commit with the descriptive message.
+3. Push to GitHub.
+4. Confirm the commit hash and what files were included.</pre></div>
+</div>
+
+<!-- ROLLBACK -->
+<div class="step">
+  <div class="step-header">
+    <span class="step-number">Step 15</span>
+    <span class="step-title">Roll Back to a Working State</span>
+  </div>
+  <p class="step-desc">When a session breaks something and you can't recover it forward, roll back to the last known-good commit. This is the safety net that makes bold experimentation safe.</p>
+  <div class="prompt-label">Prompt — Rollback</div>
+  <div class="prompt-box"><pre>Something from this session has broken the project and I want to roll back.
+
+1. Show me the last 10 commits with their messages and dates.
+2. Identify which commit is most likely the last working state based on
+   the session log and what we attempted today.
+3. Tell me exactly what will be lost if I roll back to that commit.
+4. If I confirm, perform the rollback.
+
+Do not roll back until I explicitly confirm after seeing what will be lost.</pre></div>
+</div>
+
+</div><!-- /page -->
+
+<!-- ═══════════════════════════════════════════ PART 8 -->
+<div class="part-header">
+  <div class="part-label">Part Eight</div>
+  <div class="part-brand">CurieLabs<span>.ai</span></div>
+  <div class="part-title">Code Quality &amp; Auditing</div>
+  <div class="part-desc">Security &nbsp;·&nbsp; Weaknesses &nbsp;·&nbsp; Bloat &nbsp;·&nbsp; Technical debt</div>
+</div>
+
+<div class="page">
+
+<div style="font-size:10.5pt;line-height:1.75;color:var(--ink-light);margin-bottom:32px;max-width:580px;">
+  Once you have a working version of your project, run an objective audit before adding more features. AI builds fast — which means it can accumulate shortcuts, duplicate logic, and security gaps just as fast. The prompts in this section treat the AI as a critic, not a builder. Use them after every significant phase, not just at the end.
+</div>
+
+<div class="step">
+  <div class="step-header">
+    <span class="step-number">Step 16</span>
+    <span class="step-title">Full Code Quality Audit</span>
+  </div>
+  <p class="step-desc">A systematic review of the entire codebase for security vulnerabilities, architectural weaknesses, dead code, and technical debt. The AI reports findings — it does not fix anything until you review and approve.</p>
+  <div class="prompt-label">Prompt — Code Quality &amp; Security Audit</div>
+  <div class="prompt-box"><pre>Perform an objective audit of this codebase. Do not write any code or make any changes.
+
+Examine every file and report findings under four categories:
+
+1. SECURITY
+   — Hardcoded API keys, passwords, or secrets anywhere in source files
+   — User inputs that are passed to a database or shell without validation
+   — Endpoints or routes that are accessible without authentication and shouldn't be
+   — Sensitive data stored or transmitted without encryption
+   — Dependencies with known vulnerabilities
+
+2. ARCHITECTURAL WEAKNESSES
+   — Components that do too many unrelated things (should be split)
+   — Missing error handling — places where a failure will silently break something
+   — Assumptions that will fail under real-world conditions (e.g., assumes fast network,
+     assumes single user, assumes data always exists)
+   — Circular dependencies or tight coupling that makes future changes risky
+
+3. BLOAT &amp; DEAD CODE
+   — Functions, files, or routes that are defined but never called
+   — Duplicate logic that exists in more than one place
+   — Dependencies installed but not used
+   — Over-engineered solutions for simple problems
+
+4. TECHNICAL DEBT
+   — Shortcuts taken that will cause problems at scale or with more users
+   — Places where error messages are swallowed instead of surfaced
+   — TODO comments or placeholder logic still in production paths
+   — Inconsistent patterns that will confuse future development
+
+For each finding: name the file and line, describe the problem, rate severity
+(Critical / High / Medium / Low), and recommend the fix.
+Order by severity. Be direct and specific. Do not soften findings.</pre></div>
+</div>
+
+<div class="step">
+  <div class="step-header">
+    <span class="step-number">Step 17</span>
+    <span class="step-title">Dependency &amp; Cost Audit</span>
+  </div>
+  <p class="step-desc">Checks what your project is spending — in API calls, compute, and third-party services — and whether any of it can be reduced without sacrificing functionality.</p>
+  <div class="prompt-label">Prompt — Dependency &amp; Cost Audit</div>
+  <div class="prompt-box"><pre>Audit this project for unnecessary cost and dependency risk. Do not make any changes.
+
+1. DEPENDENCIES — list every external library or package installed.
+   For each: what is it used for, is it still actively maintained, could it be
+   replaced with a simpler built-in alternative?
+
+2. API CALL EFFICIENCY — identify every place an external API is called.
+   For each: how often does it get called, could results be cached, is the
+   same data fetched multiple times when once would suffice?
+
+3. ESTIMATED COSTS — for any paid API (AI models, cloud services, payment
+   processors), estimate the cost per user action and per month at 100 users
+   and at 1,000 users. Flag anything that will scale expensively.
+
+4. SINGLE POINTS OF FAILURE — identify any external dependency where if the
+   service goes down, the entire application stops working. Note whether a
+   fallback exists.
+
+Report findings with severity and recommended action. Do not fix anything yet.</pre></div>
+</div>
+
+<div class="step">
+  <div class="step-header">
+    <span class="step-number">Step 18</span>
+    <span class="step-title">Update CLAUDE.md After an Audit</span>
+  </div>
+  <p class="step-desc">After reviewing audit findings and deciding which to address, lock the prioritized fixes into the project memory document so they don't get lost.</p>
+  <div class="prompt-label">Prompt — Record Audit Findings in CLAUDE.md</div>
+  <div class="prompt-box"><pre>Based on the audit we just completed, update CLAUDE.md as follows:
+
+1. Add a new section "Known Issues — Audit Findings" listing every issue we decided
+   to fix, with severity and the agreed fix approach.
+
+2. Insert the Critical and High severity fixes as the top items in What's Next,
+   ahead of any feature work. Security issues are never deferred.
+
+3. Add any new Critical Constraints discovered during the audit — things that must
+   never be done in future development.
+
+4. Update the Build Plan to include an "Audit Remediation" phase before the next
+   feature phase, covering the Critical and High items.
+
+Output the updated CLAUDE.md sections.</pre></div>
+</div>
+
+<div class="footer" style="margin-top:48px;">
+  <span>The AI Builder's Playbook · curielabs.ai</span>
+  <span>Print as PDF for best results</span>
+</div>
+
+</div><!-- /page -->
+
+</body>
+</html>

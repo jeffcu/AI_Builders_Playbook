@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The AI Builder's Playbook — by CurieLabs</title>
+<meta name="description" content="An open, proven playbook for building real software with AI — without writing code. 18 complete, reusable prompts. You direct. The AI builds.">
+<meta property="og:title" content="The AI Builder's Playbook">
+<meta property="og:description" content="For everyone who has an idea and wants to build and run it — without ever writing code.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f1117;
+    --ink-light: #3d4251;
+    --ink-muted: #6b7280;
+    --accent: #1d4ed8;
+    --accent-light: #eff6ff;
+    --accent-mid: #bfdbfe;
+    --rule: #e5e7eb;
+    --step-bg: #f8fafc;
+    --dark: #0f1117;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ink);
+    background: #fff;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+    padding: 0 32px;
+    height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-brand {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; font-weight: 700; color: var(--ink);
+  }
+  .nav-mark {
+    width: 24px; height: 24px;
+    background: var(--ink); border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .nav-mark svg { width: 13px; height: 13px; }
+  .nav-mark span { font-weight: 300; color: var(--ink-muted); }
+  .nav-links {
+    display: flex; align-items: center; gap: 24px;
+    font-size: 13px; font-weight: 500; color: var(--ink-light);
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-cta {
+    background: var(--accent); color: #fff !important;
+    padding: 7px 16px; border-radius: 6px;
+    font-size: 13px; font-weight: 600;
+    transition: background 0.15s;
+  }
+  .nav-cta:hover { background: #1e40af !important; }
+
+  /* ── SECTIONS ── */
+  .section { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--dark);
+    padding: 100px 32px 90px;
+    text-align: center;
+  }
+  .hero-inner { max-width: 720px; margin: 0 auto; }
+  .hero-kicker {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.2em;
+    text-transform: uppercase; color: #60a5fa; margin-bottom: 20px;
+  }
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(38px, 6vw, 68px);
+    line-height: 1.05; color: #fff;
+    margin-bottom: 20px; letter-spacing: -0.01em;
+  }
+  .hero-title em { font-style: italic; color: #60a5fa; }
+  .hero-sub {
+    font-size: clamp(16px, 2.5vw, 19px);
+    font-weight: 300; color: #94a3b8;
+    max-width: 520px; margin: 0 auto 48px;
+    line-height: 1.6;
+  }
+  .hero-stats {
+    display: flex; justify-content: center; gap: 48px;
+    margin-bottom: 48px;
+  }
+  .hero-stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px; color: #fff; line-height: 1;
+  }
+  .hero-stat-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase; color: #475569; margin-top: 4px;
+  }
+  .hero-stat { text-align: center; padding: 0 16px; border-left: 1px solid #1e293b; }
+  .hero-stat:first-child { border-left: none; }
+  .hero-buttons {
+    display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;
+  }
+  .btn-primary {
+    background: var(--accent); color: #fff;
+    padding: 14px 28px; border-radius: 8px;
+    font-size: 15px; font-weight: 600;
+    transition: background 0.15s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-primary:hover { background: #1e40af; }
+  .btn-secondary {
+    background: transparent; color: #94a3b8;
+    border: 1px solid #334155;
+    padding: 14px 28px; border-radius: 8px;
+    font-size: 15px; font-weight: 500;
+    transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-secondary:hover { color: #fff; border-color: #64748b; }
+
+  /* ── HOW IT WORKS ── */
+  .how { padding: 80px 32px; background: var(--step-bg); }
+  .how-inner { max-width: 900px; margin: 0 auto; }
+  .section-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 12px;
+  }
+  .section-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 4vw, 36px);
+    color: var(--ink); margin-bottom: 12px;
+  }
+  .section-sub {
+    font-size: 16px; color: var(--ink-light);
+    max-width: 560px; margin-bottom: 48px; line-height: 1.7;
+  }
+  .how-steps {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  }
+  .how-step {
+    background: #fff; border: 1px solid var(--rule);
+    border-radius: 10px; padding: 28px 24px;
+  }
+  .how-step-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px; color: var(--accent);
+    margin-bottom: 12px; line-height: 1;
+  }
+  .how-step-title {
+    font-size: 15px; font-weight: 700; color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .how-step-body {
+    font-size: 14px; color: var(--ink-light); line-height: 1.65;
+  }
+  .how-step code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; background: var(--step-bg);
+    padding: 1px 5px; border-radius: 3px;
+    border: 1px solid var(--rule); color: var(--accent);
+  }
+
+  /* ── WHAT'S INSIDE ── */
+  .inside { padding: 80px 32px; }
+  .inside-inner { max-width: 1000px; margin: 0 auto; }
+  .parts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px; margin-top: 8px;
+  }
+  .part-card {
+    border: 1px solid var(--rule); border-radius: 8px;
+    padding: 20px 20px 18px; transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .part-card:hover {
+    border-color: var(--accent); box-shadow: 0 2px 12px rgba(29,78,216,0.08);
+  }
+  .part-card-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 6px;
+  }
+  .part-card-title {
+    font-size: 15px; font-weight: 700; color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .part-card-desc {
+    font-size: 13px; color: var(--ink-light); line-height: 1.6;
+  }
+  .part-card-steps {
+    margin-top: 10px; font-size: 11px; color: var(--ink-muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── PROMPTS PREVIEW ── */
+  .prompts { padding: 80px 32px; background: var(--dark); }
+  .prompts-inner { max-width: 900px; margin: 0 auto; }
+  .prompts-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(24px, 4vw, 34px);
+    color: #fff; margin-bottom: 10px;
+  }
+  .prompts-sub { font-size: 15px; color: #94a3b8; margin-bottom: 40px; line-height: 1.7; }
+  .prompt-sample {
+    background: #0d1117; border-left: 3px solid #3b82f6;
+    border-radius: 0 8px 8px 0; padding: 18px 22px; margin-bottom: 12px;
+  }
+  .prompt-sample-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+    text-transform: uppercase; color: #60a5fa; margin-bottom: 8px;
+  }
+  .prompt-sample pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: #c9d1d9;
+    white-space: pre-wrap; word-break: break-word; line-height: 1.6;
+  }
+  .prompt-sample .ph { color: #60a5fa; font-style: italic; }
+
+  /* ── TEMPLATE CTA ── */
+  .template { padding: 80px 32px; background: var(--accent-light); }
+  .template-inner {
+    max-width: 760px; margin: 0 auto; text-align: center;
+  }
+  .template-icon { font-size: 40px; margin-bottom: 16px; }
+  .template-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 3.5vw, 30px);
+    color: var(--ink); margin-bottom: 12px;
+  }
+  .template-body {
+    font-size: 15px; color: var(--ink-light);
+    max-width: 520px; margin: 0 auto 32px; line-height: 1.7;
+  }
+
+  /* ── PRINCIPLES ── */
+  .principles { padding: 80px 32px; }
+  .principles-inner { max-width: 960px; margin: 0 auto; }
+  .principles-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px; margin-top: 32px;
+  }
+  .principle {
+    background: var(--step-bg); border: 1px solid var(--rule);
+    border-radius: 6px; padding: 14px 16px;
+  }
+  .principle-num {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+    color: var(--accent); margin-bottom: 4px;
+  }
+  .principle-name { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 3px; }
+  .principle-body { font-size: 12.5px; color: var(--ink-light); line-height: 1.5; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--dark); color: #64748b;
+    padding: 48px 32px;
+    text-align: center;
+    font-size: 13px; line-height: 1.8;
+  }
+  footer strong { color: #94a3b8; }
+  footer a { color: #60a5fa; }
+  footer a:hover { color: #93c5fd; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    nav { padding: 0 16px; }
+    .nav-links { display: none; }
+    .how-steps { grid-template-columns: 1fr; }
+    .hero-stats { gap: 24px; flex-wrap: wrap; }
+    .hero { padding: 64px 20px 56px; }
+    .how, .inside, .prompts, .template, .principles { padding: 56px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="nav-brand">
+    <div class="nav-mark">
+      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="8" cy="8" r="5.5" stroke="white" stroke-width="1.5"/>
+        <circle cx="8" cy="8" r="1.5" fill="white"/>
+        <line x1="8" y1="2.5" x2="8" y2="0.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="8" y1="15.5" x2="8" y2="13.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="2.5" y1="8" x2="0.5" y2="8" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="15.5" y1="8" x2="13.5" y2="8" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    CurieLabs<span style="font-weight:300;color:#9ca3af;">.ai</span>
+  </div>
+  <div class="nav-links">
+    <a href="#how-it-works">How it works</a>
+    <a href="#whats-inside">What's inside</a>
+    <a href="#principles">Principles</a>
+    <a href="CLAUDE_TEMPLATE.md" target="_blank">CLAUDE.md</a>
+    <a href="guide.html" class="nav-cta">Read the Guide →</a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-kicker">by CurieLabs · Freely shared</div>
+    <h1 class="hero-title">The AI Builder's<br><em>Playbook</em></h1>
+    <p class="hero-sub">For everyone who has an idea and wants to build and run it — without ever writing code.</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">18</div>
+        <div class="hero-stat-label">Complete Prompts</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">8</div>
+        <div class="hero-stat-label">Guided Parts</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">0</div>
+        <div class="hero-stat-label">Lines of Code</div>
+      </div>
+    </div>
+    <div class="hero-buttons">
+      <a href="guide.html" class="btn-primary">Read the Guide →</a>
+      <a href="CLAUDE_TEMPLATE.md" target="_blank" class="btn-secondary">↓ Download CLAUDE.md</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ── -->
+<section class="how" id="how-it-works">
+  <div class="how-inner">
+    <div class="section-label">How it works</div>
+    <h2 class="section-heading">Create a folder. Open a session. Build.</h2>
+    <p class="section-sub">The entire process runs inside a single project folder. Claude reads your project blueprint at the start of every session and updates it as you go. No copying, no pasting documents — the project documents itself.</p>
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="how-step-num">01</div>
+        <div class="how-step-title">Create your project folder</div>
+        <div class="how-step-body">Make a folder for your project. Copy the <code>CLAUDE.md</code> template inside it. This file is the living blueprint — Claude keeps it updated throughout the build.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">02</div>
+        <div class="how-step-title">Open Claude in that folder</div>
+        <div class="how-step-body">Point your Claude session at the project folder. Claude finds <code>CLAUDE.md</code> automatically and reads it before every session. If it can't find it, it tells you.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">03</div>
+        <div class="how-step-title">Follow the prompts — in order</div>
+        <div class="how-step-body">Run Steps 1–5 to set up the project. Then repeat the build loop: Open → Build → Run → Test → Close. The guide gives you the exact words to use at every step.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── WHAT'S INSIDE ── -->
+<section class="inside" id="whats-inside">
+  <div class="inside-inner">
+    <div class="section-label">What's inside</div>
+    <h2 class="section-heading">Eight parts. Every stage covered.</h2>
+    <p class="section-sub">From first idea to shipped product — and everything in between when things get hard.</p>
+    <div class="parts-grid">
+
+      <div class="part-card">
+        <div class="part-card-label">Part One</div>
+        <div class="part-card-title">Starting a New Project</div>
+        <div class="part-card-desc">Requirements → Architecture → MVP Scope → Build Plan → Initialize CLAUDE.md. The five steps that turn an idea into a project ready to build.</div>
+        <div class="part-card-steps">Steps 01–05</div>
+      </div>
+
+      <div class="part-card">
+        <div class="part-card-label">Part Two</div>
+        <div class="part-card-title">Running Each Session</div>
+        <div class="part-card-desc">The build cycle. Open the session, build the next piece, get the exact commands to run and test it yourself, close and update CLAUDE.md. Repeat.</div>
+        <div class="part-card-steps">Steps 06–09 · The Build Loop</div>
+      </div>
+
+      <div class="part-card" style="border-color:var(--accent);background:var(--accent-light);">
+        <div class="part-card-label" style="color:var(--ink-muted);">Bridge</div>
+        <div class="part-card-title">The Eleven Principles</div>
+        <div class="part-card-desc">A quick-reference recap of every principle before moving into advanced territory. The build cycle summary: Open → Build → Test → Run → Close.</div>
+        <div class="part-card-steps">Reference card</div>
+      </div>
+
+      <div class="part-card">
+        <div class="part-card-label">Power Tools</div>
+        <div class="part-card-title">When Things Go Wrong</div>
+        <div class="part-card-desc">Four debugging techniques: copy the exact error, screenshot it, read the logs, set debugging traps. Plus session recovery, getting unstuck, and consolidation.</div>
+        <div class="part-card-steps">Steps 10–13</div>
+      </div>
+
+      <div class="part-card">
+        <div class="part-card-label">Power Tools</div>
+        <div class="part-card-title">Reference &amp; Prompt Index</div>
+        <div class="part-card-desc">Every prompt in the Playbook indexed by section and use case. Find the right prompt instantly without rereading the guide.</div>
+        <div class="part-card-steps">Step 14</div>
+      </div>
+
+      <div class="part-card">
+        <div class="part-card-label">Power Tools</div>
+        <div class="part-card-title">Your Project Memory File</div>
+        <div class="part-card-desc">The complete CLAUDE.md template with every section explained. Copy it, put it in your project folder, and let Claude fill it in as you build.</div>
+        <div class="part-card-steps">Step 15 · Full template included</div>
+      </div>
+
+      <div class="part-card">
+        <div class="part-card-label">Power Tools</div>
+        <div class="part-card-title">Your Workspace</div>
+        <div class="part-card-desc">Folder organization, ports, API keys and .env files, running multiple projects in parallel without confusion.</div>
+        <div class="part-card-steps">Steps 16–18</div>
+      </div>
+
+      <div class="part-card">
+        <div class="part-card-label">Power Tools</div>
+        <div class="part-card-title">Version Control</div>
+        <div class="part-card-desc">Git and GitHub explained without jargon. Prompts to have Claude set it up, commit, push, and roll back — you never need to touch the command line.</div>
+        <div class="part-card-steps">Steps 19–21</div>
+      </div>
+
+      <div class="part-card">
+        <div class="part-card-label">Power Tools</div>
+        <div class="part-card-title">Code Quality &amp; Auditing</div>
+        <div class="part-card-desc">Prompts for a full security audit, dependency review, cost estimation at scale, and folding findings back into CLAUDE.md as a remediation plan.</div>
+        <div class="part-card-steps">Steps 22–24</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── PROMPTS PREVIEW ── -->
+<section class="prompts">
+  <div class="prompts-inner">
+    <div class="section-label" style="color:#60a5fa;">Sample Prompts</div>
+    <h2 class="prompts-heading">Copy. Paste. Build.</h2>
+    <p class="prompts-sub">Every prompt is complete, reusable, and ready to use. Blue text is where you fill in your specifics — everything else stays exactly as written.</p>
+
+    <div class="prompt-sample">
+      <div class="prompt-sample-label">Session Open — start of every working session</div>
+      <pre>Read CLAUDE.md. If you cannot find it, stop and tell me before doing anything else.
+Confirm: what this project is, which Build Plan phase we're in, and today's goal:
+<span class="ph">[YOUR ONE-SENTENCE GOAL FOR THIS SESSION]</span>
+Do not begin work until I confirm your understanding is correct.</pre>
+    </div>
+
+    <div class="prompt-sample">
+      <div class="prompt-sample-label">Build the Next Piece — the core loop</div>
+      <pre>Read CLAUDE.md. We are working on: <span class="ph">[current phase and goal]</span>
+Build the next component: <span class="ph">[what you're adding this iteration]</span>
+When done: tell me what changed, give me the exact terminal commands to run and test
+this, tell me what success looks like, and update Current State in CLAUDE.md.</pre>
+    </div>
+
+    <div class="prompt-sample">
+      <div class="prompt-sample-label">Session Close — end of every session</div>
+      <pre>This session is ending. Update CLAUDE.md directly: current state, build plan
+progress, any debugging history, new decisions, what's next, and a session log entry.
+Write all updates now. Confirm when done.</pre>
+    </div>
+
+    <div style="margin-top:32px;text-align:center;">
+      <a href="guide.html" class="btn-primary">See all 18 prompts in the Guide →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── TEMPLATE CTA ── -->
+<section class="template">
+  <div class="template-inner">
+    <div class="template-icon">📄</div>
+    <h2 class="template-heading">Start with the CLAUDE.md Template</h2>
+    <p class="template-body">The project blueprint every session reads. Copy it into your project folder and Claude fills it in as you work through Steps 1–5. It starts empty and gets smarter every session.</p>
+    <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
+      <a href="CLAUDE_TEMPLATE.md" target="_blank" class="btn-primary" style="background:var(--ink);">↓ Download CLAUDE_TEMPLATE.md</a>
+      <a href="guide.html#template" class="btn-secondary" style="border-color:#d1d5db;color:var(--ink-light);">View in the Guide</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── PRINCIPLES ── -->
+<section class="principles" id="principles">
+  <div class="principles-inner">
+    <div class="section-label">The Eleven Principles</div>
+    <h2 class="section-heading">The foundation everything is built on.</h2>
+    <div class="principles-grid">
+      <div class="principle"><div class="principle-num">01</div><div class="principle-name">Requirements before design</div><div class="principle-body">Know exactly what you're building before designing anything.</div></div>
+      <div class="principle"><div class="principle-num">02</div><div class="principle-name">Design before building</div><div class="principle-body">Get architecture in writing, with reasoning, before code starts.</div></div>
+      <div class="principle"><div class="principle-num">03</div><div class="principle-name">Scope the MVP explicitly</div><div class="principle-body">Decide what's in and out before building starts. Say it in one sentence.</div></div>
+      <div class="principle"><div class="principle-num">04</div><div class="principle-name">Build from a plan</div><div class="principle-body">Each phase has concrete done criteria. Meet them before moving on.</div></div>
+      <div class="principle"><div class="principle-num">05</div><div class="principle-name">Build incrementally</div><div class="principle-body">One piece at a time. Confirm it works before adding the next.</div></div>
+      <div class="principle"><div class="principle-num">06</div><div class="principle-name">CLAUDE.md is the project</div><div class="principle-body">If it isn't in the document, it doesn't exist. Update it every session.</div></div>
+      <div class="principle"><div class="principle-num">07</div><div class="principle-name">Use authoritative sources</div><div class="principle-body">Fetch live documentation before any API or external service work.</div></div>
+      <div class="principle"><div class="principle-num">08</div><div class="principle-name">Lock decisions with reasoning</div><div class="principle-body">Record not just what you decided, but why — so it can't be undone accidentally.</div></div>
+      <div class="principle"><div class="principle-num">09</div><div class="principle-name">Document failures immediately</div><div class="principle-body">A failure recorded is a failure that happens only once.</div></div>
+      <div class="principle"><div class="principle-num">10</div><div class="principle-name">Build the feedback loop</div><div class="principle-body">The project moves forward along the plan — never sideways or backwards unless explicitly updated.</div></div>
+      <div class="principle"><div class="principle-num">11</div><div class="principle-name">Understand before fixing</div><div class="principle-body">Never ask for a fix before you understand the root cause.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div style="margin-bottom:16px;">
+    <div style="font-family:'Playfair Display',serif;font-size:20px;color:#e2e8f0;margin-bottom:4px;">The AI Builder's Playbook</div>
+    <div>Developed by <a href="https://curielabs.ai">CurieLabs.ai</a> · Freely shared · Born from building dozens of real projects.</div>
+  </div>
+  <div style="margin-bottom:16px;">
+    Works with <strong>Claude</strong>, Cursor, Copilot, or any AI you prefer.
+    Rename <code style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#1e293b;padding:1px 5px;border-radius:3px;">CLAUDE.md</code> to match your tool.
+  </div>
+  <div style="border-top:1px solid #1e293b;padding-top:16px;font-size:12px;color:#475569;">
+    <a href="guide.html">Full Guide</a> &nbsp;·&nbsp;
+    <a href="CLAUDE_TEMPLATE.md">CLAUDE.md Template</a> &nbsp;·&nbsp;
+    <a href="https://github.com/jeffcu/AI_Builders_Playbook">GitHub</a>
+  </div>
+</footer>
+
+</body>
+</html>
