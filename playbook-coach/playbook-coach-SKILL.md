@@ -1,6 +1,5 @@
 ---
 name: playbook-coach
-version: "1.1"
 description: >
   The AI Builder's Playbook Coach — an active project guide that keeps the user
   moving forward through every stage of building software with AI. Use this skill
